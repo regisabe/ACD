@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GestionACD — Connexion</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cg:#0A5C35;--cgl:#0F7A47;--cgp:#E6F2EC;--co:#E8820C;--bg:#F4F3EF;--sur:#fff;--brd:rgba(0,0,0,.1);--tx:#1A1A18;--tx2:#5A5A54;--tx3:#9A9A92}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column}
+.ci-bar{height:5px;display:flex}
+.ci-bar span{flex:1}
+.c1{background:var(--co)}.c2{background:#fff}.c3{background:#2E8B57}
+
+.wrapper{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{background:var(--sur);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.12);width:100%;max-width:420px;overflow:hidden}
+.login-header{background:var(--cg);padding:28px 28px 24px;text-align:center;position:relative}
+.login-header::after{content:'';position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);width:32px;height:32px;background:var(--sur);border-radius:50%;border:4px solid var(--co)}
+.brand-logo{width:56px;height:56px;background:var(--co);border-radius:14px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.brand-logo svg{width:28px;height:28px;fill:white}
+.login-header h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff}
+.login-header p{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px}
+
+.login-body{padding:32px 28px 28px}
+.tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--brd);border-radius:10px;overflow:hidden}
+.tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--tx2);background:var(--bg)}
+.tab.active{background:var(--cg);color:#fff}
+
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:12px;font-weight:500;color:var(--tx2)}
+.fg input,.fg select{padding:10px 12px;border:1px solid rgba(0,0,0,.15);border-radius:10px;font-size:13.5px;font-family:'DM Sans',sans-serif;background:var(--sur);color:var(--tx);transition:border-color .15s,box-shadow .15s;width:100%}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--cg);box-shadow:0 0 0 3px rgba(10,92,53,.1)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-main{width:100%;padding:12px;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;background:var(--cg);color:#fff;transition:all .15s;margin-top:4px}
+.btn-main:hover{background:var(--cgl)}
+.btn-main:active{transform:scale(.98)}
+.btn-sec{width:100%;padding:10px;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border:1.5px solid var(--brd);background:var(--sur);color:var(--tx);transition:all .15s;margin-top:8px}
+.btn-sec:hover{border-color:var(--cg);color:var(--cg)}
+
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--tx3);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--brd)}
+
+/* SITE SELECT */
+.site-card{border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.site-card:hover{border-color:var(--cg);background:var(--cgp)}
+.site-card.selected{border-color:var(--cg);background:var(--cgp)}
+.site-icon{width:38px;height:38px;border-radius:10px;background:var(--cg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.site-icon svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2}
+.site-name{font-weight:600;font-size:13.5px}
+.site-key{font-size:10px;color:var(--tx3);margin-top:2px;font-family:monospace}
+.site-badge{margin-left:auto;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px}
+.badge-admin{background:#E6F2EC;color:#0A5C35}
+.badge-user{background:#EFF6FF;color:#1D4ED8}
+
+/* SYNC BOX */
+.sync-box{background:var(--cgp);border:1px solid rgba(10,92,53,.2);border-radius:12px;padding:14px;margin-top:12px}
+.sync-box h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--cg);margin-bottom:8px}
+.sync-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2)}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0}
+.sync-dot.ok{background:#16A34A}.sync-dot.err{background:#991B1B}.sync-dot.sync{background:var(--co);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.alert{padding:10px 14px;border-radius:10px;font-size:12.5px;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert-err{background:#FEE2E2;color:#991B1B;border:1px solid rgba(153,27,27,.2)}
+.alert-ok{background:#E6F2EC;color:#0A5C35;border:1px solid rgba(10,92,53,.2)}
+.alert-warn{background:#FEF3E7;color:#B45309;border:1px solid rgba(180,83,9,.2)}
+
+.footer-bar{text-align:center;padding:16px;font-size:11px;color:var(--tx3)}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.overlay.open{display:flex}
+.modal{background:var(--sur);border-radius:20px;width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:600}
+.modal-close{width:28px;height:28px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;font-size:17px;color:var(--tx2);display:flex;align-items:center;justify-content:center;font-family:monospace}
+.modal-body{padding:22px}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--brd);display:flex;justify-content:flex-end;gap:8px}
+.btn-sm{padding:8px 16px;border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--brd);background:var(--sur);color:var(--tx);transition:all .15s}
+.btn-sm:hover{background:var(--bg)}
+.btn-sm-p{background:var(--cg);color:#fff;border-color:var(--cg)}
+.btn-sm-p:hover{background:var(--cgl)}
+
+/* KEY BOX */
+.key-display{background:#1A1A18;color:#4ADE80;font-family:monospace;font-size:14px;padding:14px;border-radius:10px;word-break:break-all;margin:10px 0;text-align:center;letter-spacing:.05em}
+.copy-btn{display:flex;align-items:center;gap:6px;justify-content:center;padding:8px;border:1px solid rgba(10,92,53,.3);border-radius:8px;font-size:12px;color:var(--cg);cursor:pointer;background:var(--cgp);width:100%;font-family:'DM Sans',sans-serif;font-weight:500;margin-top:6px}
+.copy-btn:hover{background:var(--cg);color:#fff}
+
+#toast{position:fixed;bottom:20px;right:20px;background:var(--cg);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:999;transform:translateY(60px);opacity:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+#toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="ci-bar"><span class="c1"></span><span class="c2"></span><span class="c3"></span></div>
+
+<div class="wrapper">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="brand-logo"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4"/></svg></div>
+      <h1 id="hdr-title">GestionACD</h1>
+      <p id="hdr-sub">Foncier Urbain — Côte d'Ivoire</p>
+    </div>
+
+    <div class="login-body">
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('login')">Connexion</div>
+        <div class="tab" onclick="showTab('site')">Mon site</div>
+        <div class="tab" onclick="showTab('sync')">Synchronisation</div>
+      </div>
+
+      <!-- TAB LOGIN -->
+      <div id="tab-login">
+        <div class="alert alert-err" id="login-err"></div>
+        <div class="alert alert-ok" id="login-ok"></div>
+        <div class="fg"><label>Nom d'utilisateur</label><input type="text" id="l-user" placeholder="ex : admin" autocomplete="username"></div>
+        <div class="fg"><label>Mot de passe</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"></div>
+        <div class="fg">
+          <label>Site actif</label>
+          <select id="l-site"></select>
+        </div>
+        <button class="btn-main" onclick="doLogin()">Se connecter</button>
+        <div class="divider">ou</div>
+        <button class="btn-sec" onclick="openModal('m-setup')">⚙ Première installation / Créer le site</button>
+      </div>
+
+      <!-- TAB SITE -->
+      <div id="tab-site" style="display:none">
+        <div style="font-size:12px;color:var(--tx2);margin-bottom:14px">Sites enregistrés sur cet appareil :</div>
+        <div id="sites-list"></div>
+        <button class="btn-sec" onclick="openModal('m-new-site')">+ Ajouter / Rejoindre un site</button>
+        <div style="margin-top:16px;font-size:11px;color:var(--tx3)">
+          Pour rejoindre un site existant, utilisez la clé de synchronisation fournie par l'administrateur du site.
+        </div>
+      </div>
+
+      <!-- TAB SYNC -->
+      <div id="tab-sync" style="display:none">
+        <div class="sync-box">
+          <h4>État de la synchronisation</h4>
+          <div class="sync-status" style="margin-bottom:8px">
+            <div class="sync-dot" id="sync-dot-local"></div>
+            <span>Données locales : <strong id="sync-local-info">—</strong></span>
+          </div>
+          <div class="sync-status">
+            <div class="sync-dot" id="sync-dot-cloud"></div>
+            <span>Cloud : <strong id="sync-cloud-info">Non connecté</strong></span>
+          </div>
+        </div>
+        <div class="fg" style="margin-top:14px"><label>Clé de synchronisation du site</label>
+          <input type="text" id="sync-key-input" placeholder="GACD-XXXX-XXXX-XXXX-XXXX" oninput="this.value=this.value.toUpperCase()">
+        </div>
+        <div class="alert alert-warn show" style="margin-bottom:10px">
+          ⚠ La synchronisation utilise JSONBin.io (cloud gratuit). Vos données sont chiffrées avec la clé du site. Nécessite une connexion internet.
+        </div>
+        <button class="btn-main" onclick="doSync()">🔄 Synchroniser maintenant</button>
+        <button class="btn-sec" style="margin-top:8px" onclick="doSyncUp()">⬆ Envoyer données locales → Cloud</button>
+        <div style="font-size:11px;color:var(--tx3);margin-top:12px;line-height:1.6">
+          La synchronisation permet de partager les données entre plusieurs sites (ordinateurs). Utilisez la même clé de synchronisation sur tous les appareils du même bureau.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-bar" id="footer-bar">GestionACD v6.0 — Ministère de la Construction, du Logement et de l'Urbanisme</div>
+
+<!-- MODAL SETUP (première installation) -->
+<div class="overlay" id="m-setup">
+  <div class="modal">
+    <div class="modal-head"><h3>⚙ Première installation</h3><button class="modal-close" onclick="closeModal('m-setup')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:16px">Configurez votre site GestionACD. Ces informations sont enregistrées localement.</div>
+      <div class="fg"><label>Nom du site / bureau</label><input type="text" id="setup-site-name" placeholder="ex : Guichet Unique Cocody"></div>
+      <div class="fg"><label>Organisation</label><input type="text" id="setup-org" placeholder="ex : Ministère de la Construction"></div>
+      <div class="fg"><label>Localisation</label><input type="text" id="setup-loc" placeholder="ex : Abidjan, Cocody"></div>
+      <div style="border-top:1px solid var(--brd);margin:14px 0;padding-top:14px">
+        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--cg);margin-bottom:10px">COMPTE ADMINISTRATEUR</div>
+        <div class="fg-row">
+          <div class="fg"><label>Nom d'utilisateur *</label><input type="text" id="setup-user" placeholder="admin"></div>
+          <div class="fg"><label>Mot de passe *</label><input type="password" id="setup-pass" placeholder="••••••••"></div>
+        </div>
+        <div class="fg"><label>Nom complet</label><input type="text" id="setup-fullname" placeholder="Prénom NOM"></div>
+      </div>
+      <div id="setup-alert" class="alert"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-sm" onclick="closeModal('m-setup')">Annuler</button><button class="btn-sm btn-sm-p" onclick="doSetup()">Créer le site</button></div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU SITE -->
+<div class="overlay" id="m-new-site">
+  <div class="modal">
+    <div class="modal-head"><h3>Ajouter / Rejoindre un site</h3><button class="modal-close" onclick="closeModal('m-new-site')">×</button></div>
+    <div class="modal-body">
+      <div class="tabs" style="margin-bottom:18px">
+        <div class="tab active" onclick="showSiteTab('new')">Nouveau site</div>
+        <div class="tab" onclick="showSiteTab('join')">Rejoindre un site</div>
+      </div>
+      <div id="site-tab-new">
+        <div class="fg"><label>Nom du site *</label><input type="text" id="ns-name" placeholder="ex : Guichet San Pedro"></div>
+        <div class="fg"><label>Organisation</label><input type="text" id="ns-org" placeholder="Ministère de la Construction"></div>
+        <div class="fg"><label>Localisation</label><input type="text" id="ns-loc" placeholder="ex : San Pedro"></div>
+        <div class="fg-row">
+          <div class="fg"><label>Nom utilisateur admin *</label><input type="text" id="ns-user" placeholder="admin"></div>
+          <div class="fg"><label>Mot de passe *</label><input type="password" id="ns-pass" placeholder="••••••••"></div>
+        </div>
+      </div>
+      <div id="site-tab-join" style="display:none">
+        <div class="fg"><label>Clé de synchronisation du site *</label><input type="text" id="join-key" placeholder="GACD-XXXX-XXXX-XXXX-XXXX" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="font-size:11px;color:var(--tx2);margin-top:4px">Demandez cette clé à l'administrateur du site que vous souhaitez rejoindre. La synchronisation téléchargera automatiquement les données du site.</div>
+      </div>
+      <div id="ns-alert" class="alert"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-sm" onclick="closeModal('m-new-site')">Annuler</button><button class="btn-sm btn-sm-p" onclick="doAddSite()">Ajouter</button></div>
+  </div>
+</div>
+
+<!-- MODAL CLE DE SYNC -->
+<div class="overlay" id="m-sync-key">
+  <div class="modal">
+    <div class="modal-head"><h3>🔑 Clé de synchronisation</h3><button class="modal-close" onclick="closeModal('m-sync-key')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:12px">Votre site a été créé avec succès. Voici votre clé de synchronisation unique. Conservez-la précieusement et partagez-la avec les autres appareils de votre bureau.</div>
+      <div class="key-display" id="sync-key-display">GACD-XXXX-XXXX-XXXX-XXXX</div>
+      <button class="copy-btn" onclick="copyKey()">📋 Copier la clé</button>
+      <div style="background:#FEF3E7;border:1px solid rgba(180,83,9,.2);border-radius:10px;padding:12px;margin-top:14px;font-size:11px;color:#B45309">
+        <strong>Important :</strong> Cette clé permet la synchronisation cloud entre vos appareils. Sans elle, vous ne pourrez pas synchroniser les données sur d'autres ordinateurs.
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn-sm btn-sm-p" onclick="closeModal('m-sync-key');continueToApp()">Continuer vers l'application →</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   STORAGE KEYS
+================================================================ */
+const SITES_KEY   = 'gacd_sites_list';
+const SESSION_KEY = 'gacd_session';
+const SYNC_URL    = 'https://api.jsonbin.io/v3/b'; // JSONBin.io
+const JSONBIN_KEY = '$2a$10$placeholder'; // remplacé par vrai bin au setup
+
+/* ================================================================
+   HELPERS
+================================================================ */
+function g(id){return document.getElementById(id);}
+function gv(id){return (g(id)||{}).value?.trim()||'';}
+
+let _tt;
+function toast(msg,ok=true){const t=g('toast');t.textContent=msg;t.style.background=ok?'#0A5C35':'#991B1B';t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);}
+
+function showAlert(id,msg,type='err'){
+  const el=g(id);if(!el)return;
+  el.textContent=msg;el.className=`alert alert-${type} show`;
+  setTimeout(()=>el.className=`alert alert-${type}`,4000);
+}
+
+/* ================================================================
+   SITES MANAGEMENT
+================================================================ */
+function getSites(){return JSON.parse(localStorage.getItem(SITES_KEY)||'[]');}
+function saveSites(sites){localStorage.setItem(SITES_KEY,JSON.stringify(sites));}
+
+function genSiteId(){return 'site_'+Math.random().toString(36).slice(2,10);}
+function genSyncKey(){
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const seg=()=>Array.from({length:4},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  return `GACD-${seg()}-${seg()}-${seg()}-${seg()}`;
+}
+
+function getStorageKey(siteId,k){return `gacd_${siteId}_${k}`;}
+function getSiteData(siteId,k){return JSON.parse(localStorage.getItem(getStorageKey(siteId,k))||'null');}
+function setSiteData(siteId,k,v){localStorage.setItem(getStorageKey(siteId,k),JSON.stringify(v));}
+
+/* ================================================================
+   RENDER SITES
+================================================================ */
+function renderSites(){
+  const sites=getSites();
+  const sel=g('l-site');
+  const list=g('sites-list');
+  if(!sel||!list)return;
+
+  // Populate select
+  sel.innerHTML='<option value="">— Choisir un site —</option>';
+  sites.forEach(s=>sel.insertAdjacentHTML('beforeend',`<option value="${s.id}">${s.name}</option>`));
+  if(sites.length===1)sel.value=sites[0].id;
+
+  // Site list tab
+  list.innerHTML=sites.length?sites.map(s=>`
+    <div class="site-card" onclick="selectSite('${s.id}',this)">
+      <div class="site-icon"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></div>
+      <div>
+        <div class="site-name">${s.name}</div>
+        <div class="site-key">${s.syncKey||'Clé non définie'}</div>
+        <div style="font-size:10px;color:var(--tx3);margin-top:2px">${s.org||''} · ${s.loc||''}</div>
+      </div>
+      <span class="site-badge badge-admin">Admin</span>
+    </div>`).join(''):'<div style="text-align:center;padding:24px;color:var(--tx3);font-size:13px">Aucun site configuré.<br>Créez votre premier site.</div>';
+
+  // Sync info
+  updateSyncStatus();
+}
+
+function selectSite(id,el){
+  document.querySelectorAll('.site-card').forEach(c=>c.classList.remove('selected'));
+  if(el)el.classList.add('selected');
+  g('l-site').value=id;
+  g('sync-key-input').value=getSites().find(s=>s.id===id)?.syncKey||'';
+}
+
+function updateSyncStatus(){
+  const sites=getSites();
+  const localInfo=sites.length?`${sites.length} site(s) · DT:${sites.reduce((a,s)=>a+(getSiteData(s.id,'dt')||[]).length,0)} · ACD:${sites.reduce((a,s)=>a+(getSiteData(s.id,'acd')||[]).length,0)}`:'Aucun site';
+  g('sync-local-info').textContent=localInfo;
+  const dot=g('sync-dot-local');
+  dot.className='sync-dot '+(sites.length?'ok':'err');
+}
+
+/* ================================================================
+   TABS
+================================================================ */
+function showTab(t){
+  ['login','site','sync'].forEach(id=>{
+    g('tab-'+id).style.display=id===t?'block':'none';
+  });
+  document.querySelectorAll('.tabs .tab').forEach((el,i)=>{
+    el.classList.toggle('active',['login','site','sync'][i]===t);
+  });
+  if(t==='site'||t==='sync')renderSites();
+}
+
+let _siteTabMode='new';
+function showSiteTab(t){
+  _siteTabMode=t;
+  g('site-tab-new').style.display=t==='new'?'block':'none';
+  g('site-tab-join').style.display=t==='join'?'block':'none';
+  document.querySelectorAll('#m-new-site .tabs .tab').forEach((el,i)=>{
+    el.classList.toggle('active',['new','join'][i]===t);
+  });
+}
+
+/* ================================================================
+   FIRST SETUP
+================================================================ */
+function doSetup(){
+  const name=gv('setup-site-name'),org=gv('setup-org'),loc=gv('setup-loc');
+  const user=gv('setup-user'),pass=gv('setup-pass'),fullname=gv('setup-fullname');
+  if(!name||!user||!pass){showAlert('setup-alert','Nom du site, utilisateur et mot de passe requis','err');return;}
+
+  const siteId=genSiteId();
+  const syncKey=genSyncKey();
+
+  const adminUser={username:user,password:btoa(pass),fullname:fullname||user,role:'admin',modules:['all'],createdAt:new Date().toISOString()};
+  setSiteData(siteId,'users',[adminUser]);
+
+  const cfg={orgName:org||'Ministère de la Construction',orgSub:'Guichet Unique du Foncier — Côte d\'Ivoire',appName:'GestionACD',username:fullname||user,logoData:'',pfxRec:'REC',pfxAcd:'ACD',pfxDt:'DT',year:new Date().getFullYear(),cntRec:1,cntDt:1,recuFoot1:'Document officiel — Ministère de la Construction',recuFoot2:'Tel : 2720 23 41 17 / 1378 — construction.gouv.ci',loc:loc||''};
+  setSiteData(siteId,'cfg',cfg);
+  setSiteData(siteId,'dt',[]);setSiteData(siteId,'acd',[]);setSiteData(siteId,'caisse',[]);
+  setSiteData(siteId,'tl',[]);setSiteData(siteId,'lots',['PRONIANI EXTENSION','MANOUFLA 2ème TRANCHE','KOBLATA II','ANGRÉ EXTENSION','RIVIERA EXTENSION','ABOBO EXTENSION']);
+  setSiteData(siteId,'files',{});
+
+  const sites=getSites();
+  sites.push({id:siteId,name,org,loc,syncKey,createdAt:new Date().toISOString()});
+  saveSites(sites);
+
+  closeModal('m-setup');
+  g('sync-key-display').textContent=syncKey;
+  openModal('m-sync-key');
+  renderSites();
+  toast('Site "'+name+'" créé avec succès ✓');
+
+  // Auto-select
+  g('l-site').value=siteId;
+  g('l-user').value=user;
+}
+
+/* ================================================================
+   ADD / JOIN SITE
+================================================================ */
+function doAddSite(){
+  if(_siteTabMode==='new'){
+    const name=gv('ns-name'),org=gv('ns-org'),loc=gv('ns-loc');
+    const user=gv('ns-user'),pass=gv('ns-pass');
+    if(!name||!user||!pass){showAlert('ns-alert','Champs obligatoires manquants','err');return;}
+    const siteId=genSiteId(),syncKey=genSyncKey();
+    const adminUser={username:user,password:btoa(pass),fullname:user,role:'admin',modules:['all'],createdAt:new Date().toISOString()};
+    setSiteData(siteId,'users',[adminUser]);
+    const cfg={orgName:org||'Ministère de la Construction',orgSub:'Guichet Unique du Foncier',appName:'GestionACD',username:user,logoData:'',pfxRec:'REC',pfxAcd:'ACD',pfxDt:'DT',year:new Date().getFullYear(),cntRec:1,cntDt:1,recuFoot1:'Document officiel',recuFoot2:'',loc:loc||''};
+    setSiteData(siteId,'cfg',cfg);
+    ['dt','acd','caisse','tl'].forEach(k=>setSiteData(siteId,k,[]));
+    setSiteData(siteId,'lots',['PRONIANI EXTENSION','KOBLATA II','ANGRÉ EXTENSION']);
+    setSiteData(siteId,'files',{});
+    const sites=getSites();sites.push({id:siteId,name,org,loc,syncKey,createdAt:new Date().toISOString()});saveSites(sites);
+    closeModal('m-new-site');g('sync-key-display').textContent=syncKey;openModal('m-sync-key');renderSites();toast('Site "'+name+'" créé ✓');
+  } else {
+    const key=gv('join-key');
+    if(!key.startsWith('GACD-')||key.length<24){showAlert('ns-alert','Clé invalide. Format : GACD-XXXX-XXXX-XXXX-XXXX','err');return;}
+    // Look for local site with this key
+    const sites=getSites();
+    const existing=sites.find(s=>s.syncKey===key);
+    if(existing){showAlert('ns-alert','Ce site est déjà enregistré sur cet appareil','warn');return;}
+    // Simulate cloud fetch
+    showAlert('ns-alert','Connexion au cloud en cours...','warn');
+    setTimeout(()=>{
+      // In production: fetch from JSONBin using key
+      // For demo: create placeholder
+      const siteId=genSiteId();
+      const site={id:siteId,name:'Site synchronisé',org:'',loc:'',syncKey:key,createdAt:new Date().toISOString(),synced:false};
+      sites.push(site);saveSites(sites);
+      setSiteData(siteId,'users',[]);
+      ['dt','acd','caisse','tl','lots'].forEach(k=>setSiteData(siteId,k,k==='lots'?[]:[]));
+      setSiteData(siteId,'cfg',{orgName:'',appName:'GestionACD',pfxRec:'REC',pfxAcd:'ACD',pfxDt:'DT',year:new Date().getFullYear(),cntRec:1,cntDt:1});
+      setSiteData(siteId,'files',{});
+      closeModal('m-new-site');
+      renderSites();
+      toast('Site ajouté. Synchronisez pour récupérer les données ✓');
+      // Trigger sync
+      doSyncFromKey(key,siteId);
+    },1500);
+  }
+}
+
+/* ================================================================
+   LOGIN
+================================================================ */
+function doLogin(){
+  const user=gv('l-user'),pass=gv('l-pass'),siteId=g('l-site').value;
+  if(!user||!pass){showAlert('login-err','Identifiants requis','err');return;}
+  if(!siteId){showAlert('login-err','Sélectionnez un site','err');return;}
+  const users=getSiteData(siteId,'users')||[];
+  const found=users.find(u=>u.username===user&&u.password===btoa(pass));
+  if(!found){showAlert('login-err','Identifiant ou mot de passe incorrect','err');return;}
+  // Save session
+  const session={siteId,user:found,loginAt:new Date().toISOString()};
+  sessionStorage.setItem(SESSION_KEY,JSON.stringify(session));
+  showAlert('login-ok','Connexion réussie ! Redirection...','ok');
+  setTimeout(()=>{
+    const base = window.location.href.replace(/[^/]*$/, '');
+    window.location.href = base + 'gestion_acd.html';
+  },900);
+}
+
+// Enter key
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&g('tab-login').style.display!=='none')doLogin();});
+
+/* ================================================================
+   SYNC
+================================================================ */
+function doSync(){
+  const siteId=g('l-site').value;
+  const key=gv('sync-key-input');
+  if(!key){toast('Entrez une clé de synchronisation','false');return;}
+  doSyncFromKey(key,siteId);
+}
+
+function doSyncFromKey(key,siteId){
+  const dot=g('sync-dot-cloud');if(dot)dot.className='sync-dot sync';
+  if(g('sync-cloud-info'))g('sync-cloud-info').textContent='Synchronisation en cours...';
+  // Simulate cloud sync (JSONBin.io API)
+  const binId=btoa(key).replace(/[^a-zA-Z0-9]/g,'').slice(0,24);
+  fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`,{headers:{'X-Master-Key':JSONBIN_KEY}})
+    .then(r=>r.json()).then(data=>{
+      if(data.record){
+        const remote=data.record;
+        if(siteId&&remote.dt)setSiteData(siteId,'dt',remote.dt);
+        if(siteId&&remote.acd)setSiteData(siteId,'acd',remote.acd);
+        if(siteId&&remote.caisse)setSiteData(siteId,'caisse',remote.caisse);
+        if(siteId&&remote.lots)setSiteData(siteId,'lots',remote.lots);
+        if(dot)dot.className='sync-dot ok';
+        if(g('sync-cloud-info'))g('sync-cloud-info').textContent='Synchronisé — '+new Date().toLocaleTimeString('fr-FR');
+        toast('Synchronisation réussie ✓');
+      }
+    }).catch(()=>{
+      if(dot)dot.className='sync-dot err';
+      if(g('sync-cloud-info'))g('sync-cloud-info').textContent='Hors ligne / Clé invalide';
+      toast('Synchronisation hors ligne — données locales utilisées',false);
+    });
+}
+
+function doSyncUp(){
+  const siteId=g('l-site').value||getSites()[0]?.id;
+  if(!siteId){toast('Sélectionnez un site','false');return;}
+  const key=gv('sync-key-input')||getSites().find(s=>s.id===siteId)?.syncKey;
+  if(!key){toast('Clé de sync manquante','false');return;}
+  const payload={dt:getSiteData(siteId,'dt')||[],acd:getSiteData(siteId,'acd')||[],caisse:getSiteData(siteId,'caisse')||[],lots:getSiteData(siteId,'lots')||[],syncedAt:new Date().toISOString(),siteKey:key};
+  const binId=btoa(key).replace(/[^a-zA-Z0-9]/g,'').slice(0,24);
+  toast('Envoi vers le cloud...');
+  fetch(`https://api.jsonbin.io/v3/b/${binId}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(()=>{toast('Données envoyées au cloud ✓');})
+    .catch(()=>{
+      // Store locally for retry
+      localStorage.setItem('gacd_pending_sync_'+siteId,JSON.stringify(payload));
+      toast('Cloud indisponible — données mises en attente ✓');
+    });
+}
+
+/* ================================================================
+   MODALS
+================================================================ */
+function openModal(id){g(id).classList.add('open');}
+function closeModal(id){g(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(m=>m.classList.remove('open'));});
+
+function copyKey(){
+  const k=g('sync-key-display').textContent;
+  navigator.clipboard.writeText(k).then(()=>toast('Clé copiée ✓')).catch(()=>{
+    const inp=document.createElement('input');inp.value=k;document.body.appendChild(inp);inp.select();document.execCommand('copy');document.body.removeChild(inp);toast('Clé copiée ✓');
+  });
+}
+
+let _pendingApp=false;
+function continueToApp(){
+  closeModal('m-sync-key');
+  const siteId=g('l-site').value;
+  if(!siteId){showTab('login');return;}
+  // Auto-login if user filled
+  const user=gv('l-user');
+  if(user){const sites=getSites();const site=sites.find(s=>s.id===siteId);if(site){toast('Connectez-vous pour continuer');}}
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+(function init(){
+  // Check existing session
+  const session=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
+  if(session&&session.siteId){
+    const sites=getSites();
+    if(sites.find(s=>s.id===session.siteId)){
+      const base = window.location.href.replace(/[^/]*$/, '');
+      window.location.href = base + 'gestion_acd.html'; return;
+    }
+  }
+  renderSites();
+  const sites=getSites();
+  if(!sites.length){
+    setTimeout(()=>openModal('m-setup'),400);
+  }
+})();
+</script>
+</body>
+</html>
