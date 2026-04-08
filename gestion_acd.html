@@ -1210,8 +1210,8 @@ tbody tr:hover td{background:var(--cgp)}
 (function checkSession(){
   const raw = sessionStorage.getItem('gacd_session');
   if(!raw){
-    const base = window.location.href.replace(/[^/]*$/, '');
-    window.location.replace(base + 'login.html');
+    const loginUrl = new URL('login.html', window.location.href).href;
+    window.location.assign(loginUrl);
     throw new Error('not authenticated');
   }
 })();
@@ -1280,12 +1280,12 @@ function applyConfig(){
 }
 
 function doLogout(){
-  toast('Déconnexion en cours...','');
+  toast('Déconnexion en cours...');
   setTimeout(()=>{
     sessionStorage.removeItem('gacd_session');
-    const base = window.location.href.replace(/[^/]*$/, '');
-    window.location.href = base + 'login.html';
-  }, 800);
+    const loginUrl = new URL('login.html', window.location.href).href;
+    window.location.assign(loginUrl);
+  }, 600);
 }
 
 function updLogoPreview(){
