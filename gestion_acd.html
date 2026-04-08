@@ -274,9 +274,64 @@ tbody tr:hover td{background:var(--cgp)}
   .mbox.recu-w{width:100%;max-height:none;box-shadow:none;border:none;border-radius:0}
   .recu-sheet{border:none;padding:10mm;page-break-after:always}
 }
+/* ---- ÉCRAN DE CONNEXION INTÉGRÉ ---- */
+#login-screen{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:var(--bg);align-items:center;justify-content:center;flex-direction:column;
+  font-family:'DM Sans',sans-serif;
+}
+#login-screen.visible{display:flex;}
+.ls-bar{position:absolute;top:0;left:0;right:0;height:5px;display:flex;}
+.ls-bar span{flex:1}
+.ls-box{background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.14);width:100%;max-width:400px;overflow:hidden;margin:16px}
+.ls-head{background:var(--cg);padding:28px 28px 22px;text-align:center}
+.ls-logo{width:52px;height:52px;background:var(--co);border-radius:14px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.ls-logo svg{width:26px;height:26px;fill:white}
+.ls-head h1{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;color:#fff}
+.ls-head p{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+.ls-body{padding:28px}
+.ls-fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.ls-fg label{font-size:12px;font-weight:500;color:var(--tx2)}
+.ls-fg input,.ls-fg select{padding:10px 12px;border:1px solid rgba(0,0,0,.15);border-radius:10px;font-size:13.5px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--tx);width:100%;transition:border-color .15s}
+.ls-fg input:focus,.ls-fg select:focus{outline:none;border-color:var(--cg);box-shadow:0 0 0 3px rgba(10,92,53,.1)}
+.ls-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;background:var(--cg);color:#fff;margin-top:4px;transition:background .15s}
+.ls-btn:hover{background:var(--cgl)}
+.ls-err{background:#FEE2E2;color:#991B1B;border:1px solid rgba(153,27,27,.2);border-radius:10px;padding:9px 13px;font-size:12px;margin-bottom:12px;display:none}
+.ls-err.show{display:block}
+.ls-footer{font-size:11px;color:var(--tx3);margin-top:18px;text-align:center}
 </style>
 </head>
 <body>
+
+<!-- ======== ÉCRAN DE CONNEXION INTÉGRÉ ======== -->
+<div id="login-screen">
+  <div class="ls-bar"><span style="background:var(--co)"></span><span style="background:#fff"></span><span style="background:#2E8B57"></span></div>
+  <div class="ls-box">
+    <div class="ls-head">
+      <div class="ls-logo"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4"/></svg></div>
+      <h1>GestionACD</h1>
+      <p>Foncier Urbain — Côte d'Ivoire</p>
+    </div>
+    <div class="ls-body">
+      <div class="ls-err" id="ls-err"></div>
+      <div class="ls-fg">
+        <label>Nom d'utilisateur</label>
+        <input type="text" id="ls-user" placeholder="ex : admin" autocomplete="username">
+      </div>
+      <div class="ls-fg">
+        <label>Mot de passe</label>
+        <input type="password" id="ls-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="ls-fg">
+        <label>Site actif</label>
+        <select id="ls-site"></select>
+      </div>
+      <button class="ls-btn" onclick="doInlineLogin()">Se connecter</button>
+    </div>
+  </div>
+  <div class="ls-footer">GestionACD — Ministère de la Construction, du Logement et de l'Urbanisme</div>
+</div>
+<!-- ============================================= -->
 
 <div id="sb">
   <div class="brand">
@@ -1205,22 +1260,111 @@ tbody tr:hover td{background:var(--cgp)}
 
 <script>
 /* ================================================================
-   SESSION — Vérification & clés de stockage
+   SESSION — Écran de connexion intégré (sans redirection externe)
 ================================================================ */
-(function checkSession(){
-  const raw = sessionStorage.getItem('gacd_session');
-  if(!raw){
-    const loginUrl = new URL('login.html', window.location.href).href;
-    window.location.assign(loginUrl);
-    throw new Error('not authenticated');
+const SITES_KEY_APP = 'gacd_sites_list';
+
+function getAppSites(){return JSON.parse(localStorage.getItem(SITES_KEY_APP)||'[]');}
+function getAppSiteData(siteId,k){return JSON.parse(localStorage.getItem('gacd_'+siteId+'_'+k)||'null');}
+
+function showLoginScreen(){
+  const ls=document.getElementById('login-screen');
+  if(ls)ls.classList.add('visible');
+  // Masquer l'appli
+  const sb=document.getElementById('sb');
+  const main=document.getElementById('main');
+  if(sb)sb.style.display='none';
+  if(main)main.style.display='none';
+  // Remplir la liste des sites
+  const sites=getAppSites();
+  const sel=document.getElementById('ls-site');
+  if(sel){
+    sel.innerHTML=sites.length
+      ?sites.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('')
+      :'<option value="">Aucun site configuré</option>';
+  }
+}
+
+function hideLoginScreen(){
+  const ls=document.getElementById('login-screen');
+  if(ls)ls.classList.remove('visible');
+  const sb=document.getElementById('sb');
+  const main=document.getElementById('main');
+  if(sb)sb.style.display='';
+  if(main)main.style.display='';
+}
+
+function doInlineLogin(){
+  const user=document.getElementById('ls-user').value.trim();
+  const pass=document.getElementById('ls-pass').value;
+  const siteId=document.getElementById('ls-site').value;
+  const errEl=document.getElementById('ls-err');
+  const showErr=msg=>{errEl.textContent=msg;errEl.className='ls-err show';};
+  if(!user||!pass){showErr('Identifiants requis');return;}
+  if(!siteId){showErr('Sélectionnez un site');return;}
+  const users=getAppSiteData(siteId,'users')||[];
+  const found=users.find(u=>u.username===user&&u.password===btoa(pass));
+  if(!found){showErr('Identifiant ou mot de passe incorrect');return;}
+  // Créer la session
+  const session={siteId,user:found,loginAt:new Date().toISOString()};
+  sessionStorage.setItem('gacd_session',JSON.stringify(session));
+  errEl.className='ls-err';
+  // Recharger les données du bon site et afficher l'appli
+  _reloadSiteData(siteId);
+  hideLoginScreen();
+  applyConfig();updDash();updBadges();
+  toast('Bienvenue '+( found.fullname||found.username)+' ✓');
+}
+
+function _reloadSiteData(siteId){
+  // Recharge toutes les données pour le site connecté
+  const sk2=k=>'gacd_'+siteId+'_'+k;
+  CFG=JSON.parse(localStorage.getItem(sk2('cfg'))||JSON.stringify(CFG));
+  DT=JSON.parse(localStorage.getItem(sk2('dt'))||'[]');
+  ACD=JSON.parse(localStorage.getItem(sk2('acd'))||'[]');
+  TL=JSON.parse(localStorage.getItem(sk2('tl'))||'[]');
+  LOTS=JSON.parse(localStorage.getItem(sk2('lots'))||JSON.stringify(LOTS));
+  CAISSE=JSON.parse(localStorage.getItem(sk2('caisse'))||'[]');
+  _FS=JSON.parse(localStorage.getItem(sk2('files'))||'{}');
+  PRESTS=JSON.parse(localStorage.getItem(sk2('prests'))||'null')||PRESTS_DEFAULT.map(p=>({...p}));
+}
+
+// Vérification session au démarrage
+let SESSION=null;
+let SITE_ID=null;
+(function initSession(){
+  const raw=sessionStorage.getItem('gacd_session');
+  if(raw){
+    try{
+      SESSION=JSON.parse(raw);
+      SITE_ID=SESSION.siteId;
+    }catch(e){SESSION=null;}
+  }
+  if(!SESSION||!SITE_ID){
+    // Pas de session → afficher l'écran login intégré au chargement
+    document.addEventListener('DOMContentLoaded',()=>showLoginScreen());
   }
 })();
-const SESSION = JSON.parse(sessionStorage.getItem('gacd_session'));
-const SITE_ID = SESSION.siteId;
-/** Retourne la clé localStorage pour ce site */
-function sk(k){ return 'gacd_' + SITE_ID + '_' + k; }
 
-/* ================================================================
+function sk(k){return 'gacd_'+(SITE_ID||'default')+'_'+k;}
+
+function doLogout(){
+  sessionStorage.removeItem('gacd_session');
+  SESSION=null;SITE_ID=null;
+  // Réinitialiser les champs login
+  const u=document.getElementById('ls-user');
+  const p=document.getElementById('ls-pass');
+  if(u)u.value='';if(p)p.value='';
+  const err=document.getElementById('ls-err');
+  if(err)err.className='ls-err';
+  showLoginScreen();
+  toast('Déconnecté');
+}
+
+// Touche Entrée sur l'écran login intégré
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('login-screen')?.classList.contains('visible'))doInlineLogin();
+});/* ================================================================
    CONFIG
 ================================================================ */
 let CFG = JSON.parse(localStorage.getItem(sk('cfg')) || JSON.stringify({
@@ -1277,15 +1421,6 @@ function applyConfig(){
   const av=document.getElementById('sb-ava');
   if(av)av.textContent=displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   updLogoPreview();
-}
-
-function doLogout(){
-  toast('Déconnexion en cours...');
-  setTimeout(()=>{
-    sessionStorage.removeItem('gacd_session');
-    const loginUrl = new URL('login.html', window.location.href).href;
-    window.location.assign(loginUrl);
-  }, 600);
 }
 
 function updLogoPreview(){
