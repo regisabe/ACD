@@ -179,8 +179,42 @@ tbody tr:hover td{background:var(--cgp)}
 .recu-sig-box{border-top:1px solid #ccc;padding-top:6px}
 .recu-exemplaire{background:var(--cgp);color:var(--cg);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;text-transform:uppercase}
 .recu-watermark{color:rgba(10,92,53,.08);font-size:48px;font-weight:900;position:absolute;bottom:20px;right:20px;font-family:'Syne',sans-serif;pointer-events:none}
-/* CONFIG */
-.cfg-section{background:var(--sur);border:1px solid var(--brd);border-radius:var(--rlg);padding:20px;margin-bottom:16px;box-shadow:var(--shsm)}
+.mod-toggle{display:flex;align-items:center;gap:7px;font-size:12px;padding:7px 10px;border:1px solid var(--brd);border-radius:var(--rmd);cursor:pointer;transition:all .15s;background:var(--sur)}
+.mod-toggle:hover{border-color:var(--cg);background:var(--cgp)}
+.mod-toggle input{accent-color:var(--cg);width:14px;height:14px}
+.cfg-tab{flex:1;padding:11px;text-align:center;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--tx2);background:var(--sur2);transition:all .15s;border-right:1px solid var(--brd)}
+.cfg-tab:last-child{border-right:none}
+.cfg-tab:hover{background:var(--cgp);color:var(--cg)}
+.cfg-tab.active{background:var(--cg);color:#fff;font-weight:600}
+/* DASHBOARD MODULES */
+.dash-module{background:var(--sur);border:1px solid var(--brd);border-radius:var(--rlg);padding:18px 16px 14px;cursor:pointer;transition:all .18s;box-shadow:var(--shsm);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:4px}
+.dash-module::before{content:'';position:absolute;top:0;right:0;width:70px;height:70px;border-radius:0 var(--rlg) 0 100%;background:var(--mcp);transition:all .18s}
+.dash-module:hover{border-color:var(--mc);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.dash-module:hover::before{width:90px;height:90px}
+.dash-module:active{transform:translateY(0);box-shadow:var(--shsm)}
+.dm-icon{width:40px;height:40px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;margin-bottom:8px;flex-shrink:0}
+.dm-icon svg{width:20px;height:20px}
+.dm-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--tx);line-height:1.2}
+.dm-sub{font-size:10px;color:var(--tx3);margin-top:2px}
+.dm-arrow{position:absolute;bottom:12px;right:14px;font-size:16px;color:var(--mc);opacity:.5;transition:all .18s;font-family:'Syne',sans-serif;font-weight:700}
+.dash-module:hover .dm-arrow{opacity:1;transform:translateX(3px)}
+.role-admin{background:#E6F2EC;color:#0A5C35}.role-agent{background:#EFF6FF;color:#1D4ED8}
+.role-caissier{background:#FEF3E7;color:#B45309}.role-superviseur{background:#F3E8FF;color:#6B21A8}
+.mod-chip{display:inline-flex;align-items:center;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700;background:var(--cgp);color:var(--cg);margin:1px}
+/* APERCU DOCUMENT */
+.apercu-sheet{font-family:'DM Sans',sans-serif;font-size:12px;color:#1A1A18;padding:24px;background:#fff}
+.apercu-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0A5C35;padding-bottom:14px;margin-bottom:16px}
+.apercu-org{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#0A5C35}
+.apercu-type{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#1A1A18;margin-top:4px}
+.apercu-ref{background:#0A5C35;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;padding:6px 14px;border-radius:8px}
+.apercu-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:14px}
+.apercu-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #eee;font-size:11.5px}
+.apercu-lbl{color:#666;min-width:120px}
+.apercu-val{font-weight:600;text-align:right}
+.apercu-sec{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#0A5C35;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid #E6F2EC}
+.apercu-piece{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px}
+.apercu-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ap-ok{background:#16A34A}.ap-pend{background:#ccc}.ap-obl{background:#E8820C}
 .cfg-section h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--brd)}
 .cfg-logo-preview{width:64px;height:64px;border-radius:var(--rlg);background:var(--co);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#fff;overflow:hidden;border:2px solid var(--brd)}
 .cfg-logo-preview img{width:100%;height:100%;object-fit:cover}
@@ -336,24 +370,159 @@ tbody tr:hover td{background:var(--cgp)}
 
 <!-- ========== DASHBOARD ========== -->
 <div id="page-dashboard" class="page active">
-  <div class="sr sr-5">
-    <div class="sc g"><div class="slbl">Dossiers techniques</div><div class="sval" id="s-dt" style="color:var(--cg)">0</div><div class="ssub">enregistrés</div></div>
-    <div class="sc p"><div class="slbl">DT en cours</div><div class="sval" id="s-dt-enc" style="color:#7B1FA2">0</div><div class="ssub">en constitution</div></div>
-    <div class="sc g"><div class="slbl">ACD approuvés</div><div class="sval" id="s-appr" style="color:var(--cg)">0</div><div class="ssub">titres définitifs</div></div>
-    <div class="sc t"><div class="slbl">Retirés</div><div class="sval" id="s-retrait" style="color:#0891B2">0</div><div class="ssub">documents retirés</div></div>
-    <div class="sc k"><div class="slbl">Recettes du jour</div><div class="sval" id="s-caisse" style="color:#B45309;font-size:18px">0 F</div><div class="ssub">encaissements</div></div>
-  </div>
-  <div class="two-col">
-    <div class="card">
-      <div class="ch"><h3>Derniers dossiers techniques</h3><span class="chm" style="cursor:pointer;color:var(--cg)" onclick="go('dt-liste',document.querySelector('[data-page=dt-liste]'))">Voir tout →</span></div>
-      <div class="tw"><table><thead><tr><th>Réf. DT</th><th>Propriétaire</th><th>Type</th><th>Progression</th><th>Statut</th></tr></thead><tbody id="dash-dt-tb"></tbody></table></div>
+
+  <!-- Bandeau de bienvenue -->
+  <div id="dash-welcome" style="background:linear-gradient(135deg,var(--cg) 0%,#0F7A47 100%);border-radius:var(--rlg);padding:22px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 4px 18px rgba(10,92,53,.25)">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff" id="dash-hello">Bonjour !</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:3px" id="dash-date"></div>
     </div>
-    <div class="card"><div class="ch"><h3>Activité récente</h3></div><div class="cb"><ul class="tl" id="tl-ul"></ul></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-dt">0</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65)">DT</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-acd">0</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65)">ACD</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-caisse">0</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65)">Reçus</div>
+      </div>
+      <div style="background:rgba(232,130,12,.3);border:1px solid rgba(232,130,12,.5);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:100px">
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff" id="dash-recettes">0 F</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65)">Recettes du jour</div>
+      </div>
+    </div>
   </div>
-  <div class="card">
-    <div class="ch"><h3>Derniers ACD</h3><span class="chm" style="cursor:pointer;color:var(--cg)" onclick="go('acd-liste',document.querySelector('[data-page=acd-liste]'))">Voir tout →</span></div>
-    <div class="tw"><table><thead><tr><th>Date</th><th>N° ATV</th><th>Nom et Prénoms</th><th>Ilôt</th><th>Lot</th><th>Lotissement</th><th>Statut</th></tr></thead><tbody id="dash-acd-tb"></tbody></table></div>
+
+  <!-- Grille des modules -->
+  <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:12px">Modules</div>
+  <div id="dash-modules-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px">
+
+    <div class="dash-module" onclick="go('dt-liste',document.querySelector('[data-page=dt-liste]'))" style="--mc:#7B1FA2;--mcp:#F3E8FF">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="dm-label">Dossiers Techniques</div>
+      <div class="dm-sub" id="dm-dt-sub">Registre DT</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('dt-new',document.querySelector('[data-page=dt-new]'))" style="--mc:#7B1FA2;--mcp:#F3E8FF">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="dm-label">Nouveau dossier DT</div>
+      <div class="dm-sub">Créer un dossier technique</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('acd-liste',document.querySelector('[data-page=acd-liste]'))" style="--mc:var(--cg);--mcp:var(--cgp)">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      </div>
+      <div class="dm-label">Registre ACD</div>
+      <div class="dm-sub" id="dm-acd-sub">Toutes les attestations</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('acd-new',document.querySelector('[data-page=acd-new]'))" style="--mc:var(--cg);--mcp:var(--cgp)">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="dm-label">Nouvel ACD</div>
+      <div class="dm-sub">Créer une attestation</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('caisse',document.querySelector('[data-page=caisse]'))" style="--mc:#B45309;--mcp:#FEF3E7">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div class="dm-label">Caisse</div>
+      <div class="dm-sub" id="dm-caisse-sub">Encaissements</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('caisse-new',document.querySelector('[data-page=caisse-new]'))" style="--mc:#B45309;--mcp:#FEF3E7">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="dm-label">Nouvel encaissement</div>
+      <div class="dm-sub">Saisir un reçu</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('workflow',document.querySelector('[data-page=workflow]'))" style="--mc:var(--co);--mcp:var(--cop)">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+      </div>
+      <div class="dm-label">Suivi Workflow</div>
+      <div class="dm-sub" id="dm-wf-sub">Dossiers en cours</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('rapports',document.querySelector('[data-page=rapports]'))" style="--mc:#1565C0;--mcp:#EFF6FF">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+      </div>
+      <div class="dm-label">Rapports & Stats</div>
+      <div class="dm-sub">Analyses et statistiques</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('nomenclature',document.querySelector('[data-page=nomenclature]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div class="dm-label">Nomenclature</div>
+      <div class="dm-sub">Pièces par type de dossier</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('redevances',document.querySelector('[data-page=redevances]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div class="dm-label">Barème Redevances</div>
+      <div class="dm-sub">Tarifs officiels</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('lotissements',document.querySelector('[data-page=lotissements]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      </div>
+      <div class="dm-label">Lotissements</div>
+      <div class="dm-sub" id="dm-lot-sub">Référentiel</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
+    <div class="dash-module" onclick="go('config',document.querySelector('[data-page=config]'))" style="--mc:#374151;--mcp:#F3F4F6">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+      <div class="dm-label">Configuration</div>
+      <div class="dm-sub">Paramètres & utilisateurs</div>
+      <div class="dm-arrow">→</div>
+    </div>
+
   </div>
+
+  <!-- Activité récente compacte -->
+  <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:12px">Activité récente</div>
+  <div class="card"><div class="cb" style="padding:12px"><ul class="tl" id="tl-ul"></ul></div></div>
+
+  <!-- IDs cachés pour compatibilité -->
+  <span id="s-dt" style="display:none">0</span>
+  <span id="s-dt-enc" style="display:none">0</span>
+  <span id="s-appr" style="display:none">0</span>
+  <span id="s-retrait" style="display:none">0</span>
+  <span id="s-caisse" style="display:none">0</span>
+  <span id="dash-dt-tb" style="display:none"></span>
+  <span id="dash-acd-tb" style="display:none"></span>
 </div>
 
 <!-- ========== DT LISTE ========== -->
@@ -696,50 +865,174 @@ tbody tr:hover td{background:var(--cgp)}
 
 <!-- ========== CONFIGURATION ========== -->
 <div id="page-config" class="page">
-  <div class="cfg-section">
-    <h3>Identité de l'organisation</h3>
-    <div class="fg2">
-      <div>
-        <div class="fg" style="margin-bottom:10px"><label>Nom de l'organisation</label><input type="text" id="cfg-org-name" placeholder="ex : Ministère de la Construction"></div>
-        <div class="fg" style="margin-bottom:10px"><label>Sous-titre / localisation</label><input type="text" id="cfg-org-sub" placeholder="ex : Guichet Unique du Foncier — Abidjan"></div>
-        <div class="fg" style="margin-bottom:10px"><label>Nom de l'application</label><input type="text" id="cfg-app-name" placeholder="ex : GestionACD"></div>
-        <div class="fg" style="margin-bottom:10px"><label>Nom de l'agent / Utilisateur</label><input type="text" id="cfg-username" placeholder="ex : Agent Guichet"></div>
-      </div>
-      <div>
-        <label style="font-size:11px;font-weight:500;color:var(--tx2);display:block;margin-bottom:6px">Logo de l'organisation</label>
-        <div class="cfg-logo-preview" id="cfg-logo-preview" style="margin-bottom:10px">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>
+  <!-- ONGLETS CONFIG -->
+  <div style="display:flex;gap:0;margin-bottom:18px;border:1px solid var(--brd);border-radius:var(--rlg);overflow:hidden;background:var(--sur);box-shadow:var(--shsm)">
+    <div class="cfg-tab active" id="ctab-general" onclick="showCfgTab('general')">⚙ Général</div>
+    <div class="cfg-tab" id="ctab-users" onclick="showCfgTab('users')">👥 Utilisateurs</div>
+    <div class="cfg-tab" id="ctab-caisse" onclick="showCfgTab('caisse')">💰 Caisse & Prestations</div>
+    <div class="cfg-tab" id="ctab-sync" onclick="showCfgTab('sync')">🔄 Sauvegarde & Sync</div>
+  </div>
+
+  <!-- ONGLET GÉNÉRAL -->
+  <div id="cfg-pane-general">
+    <div class="cfg-section">
+      <h3>Identité de l'organisation</h3>
+      <div class="fg2">
+        <div>
+          <div class="fg" style="margin-bottom:10px"><label>Nom de l'organisation</label><input type="text" id="cfg-org-name" placeholder="ex : Ministère de la Construction"></div>
+          <div class="fg" style="margin-bottom:10px"><label>Sous-titre / localisation</label><input type="text" id="cfg-org-sub" placeholder="ex : Guichet Unique du Foncier — Abidjan"></div>
+          <div class="fg" style="margin-bottom:10px"><label>Nom de l'application</label><input type="text" id="cfg-app-name" placeholder="ex : GestionACD"></div>
+          <div class="fg" style="margin-bottom:10px"><label>Nom de l'agent / Utilisateur</label><input type="text" id="cfg-username" placeholder="ex : Agent Guichet"></div>
         </div>
-        <div class="upload-zone" style="padding:10px">
-          <input type="file" accept=".jpg,.jpeg,.png,.svg" onchange="handleLogoUpload(this)">
-          <p>Cliquer pour uploader le logo</p>
-          <span>JPG, PNG, SVG — max 2 Mo</span>
+        <div>
+          <label style="font-size:11px;font-weight:500;color:var(--tx2);display:block;margin-bottom:6px">Logo de l'organisation</label>
+          <div class="cfg-logo-preview" id="cfg-logo-preview" style="margin-bottom:10px">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>
+          </div>
+          <div class="upload-zone" style="padding:10px">
+            <input type="file" accept=".jpg,.jpeg,.png,.svg" onchange="handleLogoUpload(this)">
+            <p>Cliquer pour uploader le logo</p><span>JPG, PNG, SVG — max 2 Mo</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:#991B1B" onclick="removeLogo()">Supprimer le logo</button>
         </div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:#991B1B" onclick="removeLogo()">Supprimer le logo</button>
+      </div>
+    </div>
+    <div class="cfg-section">
+      <h3>Préfixes et numérotation automatique</h3>
+      <div class="fg3">
+        <div class="fg"><label>Préfixe N° Reçu Caisse</label><input type="text" id="cfg-pfx-rec" placeholder="ex : REC"></div>
+        <div class="fg"><label>Préfixe Réf. ACD</label><input type="text" id="cfg-pfx-acd" placeholder="ex : ACD"></div>
+        <div class="fg"><label>Préfixe Réf. DT</label><input type="text" id="cfg-pfx-dt" placeholder="ex : DT"></div>
+        <div class="fg"><label>Année en cours</label><input type="number" id="cfg-year" placeholder="2025" min="2020" max="2040"></div>
+        <div class="fg"><label>Compteur reçu (prochain)</label><input type="number" id="cfg-cnt-rec" placeholder="1" min="1"></div>
+        <div class="fg"><label>Compteur DT (prochain)</label><input type="number" id="cfg-cnt-dt" placeholder="1" min="1"></div>
+      </div>
+    </div>
+    <div class="cfg-section">
+      <h3>Paramètres du reçu de caisse</h3>
+      <div class="fg2">
+        <div class="fg"><label>Mention pied de page ligne 1</label><input type="text" id="cfg-recu-foot1" placeholder="ex : Document officiel — Ministère de la Construction"></div>
+        <div class="fg"><label>Mention pied de page ligne 2</label><input type="text" id="cfg-recu-foot2" placeholder="ex : Tel : 2720 23 41 17 / 1378"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:4px">
+      <button class="btn" onclick="loadConfig()">Réinitialiser</button>
+      <button class="btn btn-p" onclick="saveConfig()">Enregistrer la configuration</button>
+    </div>
+  </div>
+
+  <!-- ONGLET UTILISATEURS -->
+  <div id="cfg-pane-users" style="display:none">
+    <div class="cfg-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <h3 style="margin-bottom:0">Gestion des utilisateurs</h3>
+          <p style="font-size:11px;color:var(--tx3);margin-top:3px">Créez et gérez les comptes d'accès à l'application.</p>
+        </div>
+        <button class="btn btn-p" onclick="openUserModal()">+ Nouvel utilisateur</button>
+      </div>
+      <!-- Légende des rôles -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:#E6F2EC;color:#0A5C35">● Administrateur</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:#EFF6FF;color:#1D4ED8">● Agent Guichet</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:#FEF3E7;color:#B45309">● Caissier</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:#F3E8FF;color:#6B21A8">● Superviseur</span>
+      </div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Nom complet</th><th>Identifiant</th><th>Rôle</th><th>Modules autorisés</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
       </div>
     </div>
   </div>
-  <div class="cfg-section">
-    <h3>Préfixes et numérotation automatique</h3>
-    <div class="fg3">
-      <div class="fg"><label>Préfixe N° Reçu Caisse</label><input type="text" id="cfg-pfx-rec" placeholder="ex : REC"></div>
-      <div class="fg"><label>Préfixe Réf. ACD</label><input type="text" id="cfg-pfx-acd" placeholder="ex : ACD"></div>
-      <div class="fg"><label>Préfixe Réf. DT</label><input type="text" id="cfg-pfx-dt" placeholder="ex : DT"></div>
-      <div class="fg"><label>Année en cours</label><input type="number" id="cfg-year" placeholder="2025" min="2020" max="2040"></div>
-      <div class="fg"><label>Compteur reçu (prochain)</label><input type="number" id="cfg-cnt-rec" placeholder="1" min="1"></div>
-      <div class="fg"><label>Compteur DT (prochain)</label><input type="number" id="cfg-cnt-dt" placeholder="1" min="1"></div>
+
+  <!-- ONGLET CAISSE & PRESTATIONS -->
+  <div id="cfg-pane-caisse" style="display:none">
+    <div class="cfg-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin-bottom:0">Catalogue des prestations</h3>
+          <p style="font-size:11px;color:var(--tx3);margin-top:3px">Gérez les prestations disponibles à la caisse : libellé, catégorie, prix et statut actif.</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="sw" style="min-width:200px">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="q-cfg-prest" placeholder="Rechercher..." oninput="renderCfgPrests()">
+          </div>
+          <select class="fsel" id="f-cfg-prest-cat" onchange="renderCfgPrests()">
+            <option value="">Toutes catégories</option>
+          </select>
+          <button class="btn btn-p" onclick="openPrestModal()">+ Nouvelle prestation</button>
+          <button class="btn" onclick="resetPrestsDefault()" title="Remettre les prestations par défaut">↺ Réinitialiser</button>
+        </div>
+      </div>
+      <!-- Compteurs rapides -->
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <div id="prest-count-actif" style="font-size:11px;padding:5px 12px;border-radius:20px;background:var(--cgp);color:var(--cg);font-weight:600"></div>
+        <div id="prest-count-inactif" style="font-size:11px;padding:5px 12px;border-radius:20px;background:#FEE2E2;color:#991B1B;font-weight:600"></div>
+        <div id="prest-count-total" style="font-size:11px;padding:5px 12px;border-radius:20px;background:var(--sur2);color:var(--tx2);font-weight:600"></div>
+      </div>
+      <div class="tw">
+        <table id="cfg-prest-table">
+          <thead>
+            <tr>
+              <th>Libellé de la prestation</th>
+              <th>Catégorie</th>
+              <th>Prix (F CFA)</th>
+              <th>Description / Note</th>
+              <th>Statut</th>
+              <th style="width:110px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="cfg-prest-tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <div class="cfg-section">
-    <h3>Paramètres du reçu de caisse</h3>
-    <div class="fg2">
-      <div class="fg"><label>Mention pied de page ligne 1</label><input type="text" id="cfg-recu-foot1" placeholder="ex : Document officiel — Ministère de la Construction"></div>
-      <div class="fg"><label>Mention pied de page ligne 2</label><input type="text" id="cfg-recu-foot2" placeholder="ex : Tel : 2720 23 41 17 / 1378"></div>
+
+  <!-- ONGLET SAUVEGARDE & SYNC -->
+  <div id="cfg-pane-sync" style="display:none">
+    <div class="cfg-section">
+      <h3>Sauvegarde locale</h3>
+      <p style="font-size:12px;color:var(--tx2);margin-bottom:16px">Exportez toutes vos données dans un fichier JSON chiffré pour les sauvegarder ou les transférer vers un autre appareil.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div style="border:1px solid var(--brd);border-radius:var(--rlg);padding:18px;background:var(--cgp)">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--cg);margin-bottom:6px">⬇ Exporter les données</div>
+          <p style="font-size:11px;color:var(--tx2);margin-bottom:12px">Télécharge un fichier .json contenant tous vos dossiers, ACD, encaissements et configuration.</p>
+          <div id="sync-stats" style="font-size:11px;color:var(--tx3);margin-bottom:12px"></div>
+          <button class="btn btn-p" style="width:100%" onclick="exportData()">⬇ Télécharger la sauvegarde</button>
+        </div>
+        <div style="border:1px solid var(--brd);border-radius:var(--rlg);padding:18px;background:var(--cop)">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#B45309;margin-bottom:6px">⬆ Restaurer les données</div>
+          <p style="font-size:11px;color:var(--tx2);margin-bottom:12px">Importez un fichier de sauvegarde. <strong style="color:#991B1B">Attention :</strong> remplace les données actuelles.</p>
+          <div class="upload-zone" style="padding:10px;border-color:rgba(180,83,9,.3)">
+            <input type="file" accept=".json" onchange="importData(this)">
+            <p style="color:#B45309">Sélectionner le fichier .json</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:4px">
-    <button class="btn" onclick="loadConfig()">Réinitialiser</button>
-    <button class="btn btn-p" onclick="saveConfig()">Enregistrer la configuration</button>
+    <div class="cfg-section">
+      <h3>Dernières sauvegardes</h3>
+      <div id="backup-history" style="font-size:12px;color:var(--tx3)">Aucune sauvegarde enregistrée.</div>
+    </div>
+    <div class="cfg-section">
+      <h3>Synchronisation cloud (JSONBin.io)</h3>
+      <div style="background:var(--cop);border:1px solid rgba(180,83,9,.2);border-radius:var(--rmd);padding:12px;margin-bottom:14px;font-size:11px;color:#B45309">
+        ⚠ La synchronisation cloud envoie vos données sur JSONBin.io. Nécessite une clé API et une connexion internet.
+      </div>
+      <div class="fg3">
+        <div class="fg"><label>Clé API JSONBin.io</label><input type="text" id="sync-api-key" placeholder="$2a$10$..." oninput="saveSyncCfg()"></div>
+        <div class="fg"><label>ID du Bin</label><input type="text" id="sync-bin-id" placeholder="6xxxxxxxxxxxxxxxx" oninput="saveSyncCfg()"></div>
+        <div class="fg"><label>Intervalle (minutes)</label><input type="number" id="sync-interval" placeholder="30" min="5" max="240" oninput="saveSyncCfg()"></div>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:10px;align-items:center">
+        <button class="btn btn-b" onclick="doCloudSync('up')">⬆ Envoyer vers le cloud</button>
+        <button class="btn btn-b" onclick="doCloudSync('down')">⬇ Récupérer depuis le cloud</button>
+        <span id="sync-cloud-status" style="font-size:11px;color:var(--tx3)"></span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -801,6 +1094,109 @@ tbody tr:hover td{background:var(--cgp)}
     <div class="mhead"><h3>Ajouter un lotissement</h3><button class="mcls" onclick="closeM('m-lot')">×</button></div>
     <div class="mbody"><div class="fg"><label>Nom <span class="req">*</span></label><input type="text" id="ml-nom" placeholder="ex : PRONIANI EXTENSION"></div></div>
     <div class="mfoot"><button class="btn" onclick="closeM('m-lot')">Annuler</button><button class="btn btn-p" onclick="saveLot()">Ajouter</button></div>
+  </div>
+</div>
+
+<!-- MODAL PRESTATION -->
+<div class="mov" id="m-prest">
+  <div class="mbox sm">
+    <div class="mhead"><h3 id="m-prest-title">Nouvelle prestation</h3><button class="mcls" onclick="closeM('m-prest')">×</button></div>
+    <div class="mbody">
+      <div class="fg" style="margin-bottom:10px">
+        <label>Libellé <span class="req">*</span></label>
+        <input type="text" id="p-label" placeholder="ex : Dépôt ACD — Attestation (Particulier)">
+      </div>
+      <div class="fg2" style="margin-bottom:10px">
+        <div class="fg">
+          <label>Catégorie <span class="req">*</span></label>
+          <input type="text" id="p-cat" placeholder="ex : Frais dépôt dossier" list="prest-cats-list">
+          <datalist id="prest-cats-list"></datalist>
+        </div>
+        <div class="fg">
+          <label>Prix (F CFA) <span class="req">*</span></label>
+          <input type="number" id="p-montant" placeholder="0" min="0" step="500">
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:10px">
+        <label>Description / Note</label>
+        <input type="text" id="p-desc" placeholder="ex : 90 000 F + 1 000 F chemise">
+      </div>
+      <div class="fg" style="margin-bottom:0">
+        <label>Statut</label>
+        <select id="p-actif">
+          <option value="1">Actif — visible à la caisse</option>
+          <option value="0">Inactif — masqué à la caisse</option>
+        </select>
+      </div>
+      <div class="alert alert-err" id="p-alert" style="margin-top:10px"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeM('m-prest')">Annuler</button>
+      <button class="btn btn-p" onclick="savePrest()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UTILISATEUR -->
+<div class="mov" id="m-user">
+  <div class="mbox" style="width:580px">
+    <div class="mhead"><h3 id="m-user-title">Nouvel utilisateur</h3><button class="mcls" onclick="closeM('m-user')">×</button></div>
+    <div class="mbody">
+      <div class="fst">Identité</div>
+      <div class="fg2" style="margin-bottom:12px">
+        <div class="fg"><label>Nom complet <span class="req">*</span></label><input type="text" id="u-fullname" placeholder="Prénom NOM"></div>
+        <div class="fg"><label>Identifiant <span class="req">*</span></label><input type="text" id="u-username" placeholder="ex : agent01"></div>
+        <div class="fg"><label>Mot de passe <span class="req">*</span></label><input type="password" id="u-password" placeholder="••••••••"></div>
+        <div class="fg"><label>Confirmer mot de passe</label><input type="password" id="u-password2" placeholder="••••••••"></div>
+      </div>
+      <div class="fst">Rôle &amp; accès</div>
+      <div class="fg" style="margin-bottom:14px">
+        <label>Rôle <span class="req">*</span></label>
+        <select id="u-role" onchange="updUserRoleModules()">
+          <option value="agent">Agent Guichet</option>
+          <option value="caissier">Caissier</option>
+          <option value="superviseur">Superviseur</option>
+          <option value="admin">Administrateur</option>
+        </select>
+      </div>
+      <div class="fst">Modules autorisés</div>
+      <div id="u-modules-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="dashboard" checked> Tableau de bord</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="dt"> Dossiers Techniques</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="acd"> Registre ACD</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="caisse"> Caisse / Encaissements</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="workflow"> Suivi Workflow</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="rapports"> Rapports & Stats</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="nomenclature"> Nomenclature</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="redevances"> Barème Redevances</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="lotissements"> Lotissements</label>
+        <label class="mod-toggle"><input type="checkbox" name="umod" value="config"> Configuration</label>
+      </div>
+      <div class="fg" style="margin-bottom:0">
+        <label>Statut du compte</label>
+        <select id="u-actif">
+          <option value="1">Actif</option>
+          <option value="0">Inactif / Bloqué</option>
+        </select>
+      </div>
+      <div class="alert alert-err" id="u-alert" style="margin-top:10px"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeM('m-user')">Annuler</button>
+      <button class="btn btn-p" onclick="saveUser()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL APERÇU DOCUMENT -->
+<div class="mov" id="m-apercu">
+  <div class="mbox recu-w">
+    <div class="mhead"><h3 id="m-apercu-title">Aperçu du document</h3><button class="mcls" onclick="closeM('m-apercu')">×</button></div>
+    <div class="mbody" id="m-apercu-body" style="padding:12px"></div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeM('m-apercu')">Fermer</button>
+      <button class="btn btn-k" onclick="window.print()">🖨 Imprimer</button>
+    </div>
   </div>
 </div>
 
@@ -1007,49 +1403,54 @@ const PIECES={
 /* ================================================================
    PRESTATIONS CATALOGUE
 ================================================================ */
-const PRESTS=[
-  {id:'fd_la_phy',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (Particulier)",montant:91000,desc:'90 000 F + 1 000 F chemise'},
-  {id:'fd_la_mor',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (Société)",montant:251000,desc:'250 000 F + 1 000 F chemise'},
-  {id:'fd_la_ong',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (ONG/Asso.)",montant:101000,desc:'100 000 F + 1 000 F chemise'},
-  {id:'fd_av_phy',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (Particulier)',montant:91000,desc:'90 000 F + 1 000 F chemise'},
-  {id:'fd_av_mor',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (Société)',montant:251000,desc:'250 000 F + 1 000 F chemise'},
-  {id:'fd_av_ong',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (ONG)',montant:101000,desc:'100 000 F + 1 000 F chemise'},
-  {id:'fd_gs_phy',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (Particulier)',montant:116000,desc:'115 000 F + 1 000 F chemise'},
-  {id:'fd_gs_mor',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (Société)',montant:276000,desc:'275 000 F + 1 000 F chemise'},
-  {id:'fd_gs_ong',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (ONG)',montant:126000,desc:'125 000 F + 1 000 F chemise'},
-  {id:'r_acd_att',cat:'Redevances DGUF',label:'ACD — Attestation',montant:70000,desc:'Redevance DGUF'},
-  {id:'r_acd_la',cat:'Redevances DGUF',label:"ACD — Lettre d'Attribution",montant:60000,desc:'Redevance DGUF'},
-  {id:'r_acd_reg',cat:'Redevances DGUF',label:'ACD — Régularisation',montant:70000,desc:'Redevance DGUF'},
-  {id:'r_acd_acp',cat:'Redevances DGUF',label:'ACD — ACP + LA + TF',montant:50000,desc:'Redevance DGUF'},
-  {id:'r_cert_urb',cat:'Redevances DGUF',label:"Certificat d'urbanisme",montant:5000,desc:'Redevance DGUF'},
-  {id:'r_plan_sit',cat:'Redevances DGUF',label:'Plan de situation',montant:5000,desc:'Redevance DGUF'},
-  {id:'r_derog',cat:'Redevances DGUF',label:'Dérogation',montant:500000,desc:'Redevance DGUF'},
-  {id:'r_lot_int',cat:'Redevances DGUF',label:'Lotissement intérieur du pays',montant:70000,desc:'Redevance DGUF'},
-  {id:'r_auto_lot',cat:'Redevances DGUF',label:'Autorisation de lotir',montant:500000,desc:'Redevance DGUF'},
-  {id:'r_transfert',cat:'Redevances DDU',label:'Transfert',montant:60000,desc:'Redevance DDU'},
-  {id:'r_dupl',cat:'Redevances DDU',label:"Duplicata d'ACD (Particulier)",montant:80000,desc:'Redevance DDU'},
-  {id:'r_dupl_s',cat:'Redevances DDU',label:"Duplicata d'ACD (Société)",montant:240000,desc:'Redevance DDU'},
-  {id:'r_visit',cat:'Redevances DDU',label:"Visite technique d'identification",montant:25000,desc:'Redevance DDU'},
-  {id:'r_rad',cat:'Redevances DDU',label:'Radiation de clause',montant:20000,desc:'Redevance DDU'},
-  {id:'r_bail',cat:'Redevances DDU',label:'Bail emphytéotique',montant:40000,desc:'Redevance DDU'},
-  {id:'r_att_la',cat:'Redevances DDU',label:"Attestation de Lettre d'Attribution",montant:5000,desc:'Redevance DDU'},
-  {id:'r_etat',cat:'Redevances DDU',label:'État domanial / Position foncier',montant:5000,desc:'Redevance DDU'},
-  {id:'r_acd_hl_att',cat:'Redevances DDU',label:'ACD hors lot. — Attestation (Part. 0–0,5Ha)',montant:115000,desc:'Redevance DDU'},
-  {id:'r_acd_hl_la',cat:'Redevances DDU',label:"ACD hors lot. — Lettre d'Attribution (Part. 0–0,5Ha)",montant:100000,desc:'Redevance DDU'},
-  {id:'r_pc_mun',cat:'Redevances DL',label:'Permis de construire municipal',montant:50000,desc:'Redevance DL'},
-  {id:'r_pc_min',cat:'Redevances DL',label:'Permis de construire ministériel',montant:100000,desc:'Redevance DL'},
-  {id:'r_agr_pr',cat:'Redevances DL',label:'Agrément promoteur immobilier',montant:100000,desc:'Redevance DL'},
-  {id:'r_agr_ag',cat:'Redevances DL',label:'Agrément agent immobilier',montant:50000,desc:'Redevance DL'},
-  {id:'r_exp',cat:'Redevances DL',label:'Expertise immobilière',montant:30000,desc:'Redevance DL'},
-  {id:'r_non_log',cat:'Redevances DL',label:'Attestation de non logement',montant:5000,desc:'Redevance DL'},
-  {id:'r_arret',cat:'Redevances DAJC',label:'Arrêt urgent de travaux',montant:10000,desc:'Redevance DAJC'},
-  {id:'r_demol',cat:'Redevances DAJC',label:'Démolition',montant:10000,desc:'Redevance DAJC'},
-  {id:'r_deg',cat:'Redevances DAJC',label:'Déguerpissement',montant:10000,desc:'Redevance DAJC'},
-  {id:'r_main',cat:'Redevances DAJC',label:'Demande de mainlevée',montant:0,desc:'GRATUIT'},
-  {id:'r_rect',cat:'Redevances DAJC',label:'Demande de rectification',montant:10000,desc:'Redevance DAJC'},
-  {id:'r_conf',cat:'Redevances DTC',label:'Certificat de conformité',montant:100000,desc:'Redevance DTC'},
-  {id:'divers',cat:'Divers',label:'Prestation diverse / autre',montant:0,desc:'Montant libre'},
+/* ================================================================
+   PRESTATIONS — Catalogue dynamique (modifiable en config)
+================================================================ */
+const PRESTS_DEFAULT=[
+  {id:'fd_la_phy',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (Particulier)",montant:91000,desc:'90 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_la_mor',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (Société)",montant:251000,desc:'250 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_la_ong',cat:'Frais dépôt dossier',label:"Dépôt ACD — Lettre Attribution (ONG/Asso.)",montant:101000,desc:'100 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_av_phy',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (Particulier)',montant:91000,desc:'90 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_av_mor',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (Société)',montant:251000,desc:'250 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_av_ong',cat:'Frais dépôt dossier',label:'Dépôt ACD — Attestation Villageoise (ONG)',montant:101000,desc:'100 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_gs_phy',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (Particulier)',montant:116000,desc:'115 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_gs_mor',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (Société)',montant:276000,desc:'275 000 F + 1 000 F chemise',actif:true},
+  {id:'fd_gs_ong',cat:'Frais dépôt dossier',label:'Dépôt ACD — Grande Superficie 0–0,5Ha (ONG)',montant:126000,desc:'125 000 F + 1 000 F chemise',actif:true},
+  {id:'r_acd_att',cat:'Redevances DGUF',label:'ACD — Attestation',montant:70000,desc:'Redevance DGUF',actif:true},
+  {id:'r_acd_la',cat:'Redevances DGUF',label:"ACD — Lettre d'Attribution",montant:60000,desc:'Redevance DGUF',actif:true},
+  {id:'r_acd_reg',cat:'Redevances DGUF',label:'ACD — Régularisation',montant:70000,desc:'Redevance DGUF',actif:true},
+  {id:'r_acd_acp',cat:'Redevances DGUF',label:'ACD — ACP + LA + TF',montant:50000,desc:'Redevance DGUF',actif:true},
+  {id:'r_cert_urb',cat:'Redevances DGUF',label:"Certificat d'urbanisme",montant:5000,desc:'Redevance DGUF',actif:true},
+  {id:'r_plan_sit',cat:'Redevances DGUF',label:'Plan de situation',montant:5000,desc:'Redevance DGUF',actif:true},
+  {id:'r_derog',cat:'Redevances DGUF',label:'Dérogation',montant:500000,desc:'Redevance DGUF',actif:true},
+  {id:'r_lot_int',cat:'Redevances DGUF',label:'Lotissement intérieur du pays',montant:70000,desc:'Redevance DGUF',actif:true},
+  {id:'r_auto_lot',cat:'Redevances DGUF',label:'Autorisation de lotir',montant:500000,desc:'Redevance DGUF',actif:true},
+  {id:'r_transfert',cat:'Redevances DDU',label:'Transfert',montant:60000,desc:'Redevance DDU',actif:true},
+  {id:'r_dupl',cat:'Redevances DDU',label:"Duplicata d'ACD (Particulier)",montant:80000,desc:'Redevance DDU',actif:true},
+  {id:'r_dupl_s',cat:'Redevances DDU',label:"Duplicata d'ACD (Société)",montant:240000,desc:'Redevance DDU',actif:true},
+  {id:'r_visit',cat:'Redevances DDU',label:"Visite technique d'identification",montant:25000,desc:'Redevance DDU',actif:true},
+  {id:'r_rad',cat:'Redevances DDU',label:'Radiation de clause',montant:20000,desc:'Redevance DDU',actif:true},
+  {id:'r_bail',cat:'Redevances DDU',label:'Bail emphytéotique',montant:40000,desc:'Redevance DDU',actif:true},
+  {id:'r_att_la',cat:'Redevances DDU',label:"Attestation de Lettre d'Attribution",montant:5000,desc:'Redevance DDU',actif:true},
+  {id:'r_etat',cat:'Redevances DDU',label:'État domanial / Position foncier',montant:5000,desc:'Redevance DDU',actif:true},
+  {id:'r_acd_hl_att',cat:'Redevances DDU',label:'ACD hors lot. — Attestation (Part. 0–0,5Ha)',montant:115000,desc:'Redevance DDU',actif:true},
+  {id:'r_acd_hl_la',cat:'Redevances DDU',label:"ACD hors lot. — Lettre d'Attribution (Part. 0–0,5Ha)",montant:100000,desc:'Redevance DDU',actif:true},
+  {id:'r_pc_mun',cat:'Redevances DL',label:'Permis de construire municipal',montant:50000,desc:'Redevance DL',actif:true},
+  {id:'r_pc_min',cat:'Redevances DL',label:'Permis de construire ministériel',montant:100000,desc:'Redevance DL',actif:true},
+  {id:'r_agr_pr',cat:'Redevances DL',label:'Agrément promoteur immobilier',montant:100000,desc:'Redevance DL',actif:true},
+  {id:'r_agr_ag',cat:'Redevances DL',label:'Agrément agent immobilier',montant:50000,desc:'Redevance DL',actif:true},
+  {id:'r_exp',cat:'Redevances DL',label:'Expertise immobilière',montant:30000,desc:'Redevance DL',actif:true},
+  {id:'r_non_log',cat:'Redevances DL',label:'Attestation de non logement',montant:5000,desc:'Redevance DL',actif:true},
+  {id:'r_arret',cat:'Redevances DAJC',label:'Arrêt urgent de travaux',montant:10000,desc:'Redevance DAJC',actif:true},
+  {id:'r_demol',cat:'Redevances DAJC',label:'Démolition',montant:10000,desc:'Redevance DAJC',actif:true},
+  {id:'r_deg',cat:'Redevances DAJC',label:'Déguerpissement',montant:10000,desc:'Redevance DAJC',actif:true},
+  {id:'r_main',cat:'Redevances DAJC',label:'Demande de mainlevée',montant:0,desc:'GRATUIT',actif:true},
+  {id:'r_rect',cat:'Redevances DAJC',label:'Demande de rectification',montant:10000,desc:'Redevance DAJC',actif:true},
+  {id:'r_conf',cat:'Redevances DTC',label:'Certificat de conformité',montant:100000,desc:'Redevance DTC',actif:true},
+  {id:'divers',cat:'Divers',label:'Prestation diverse / autre',montant:0,desc:'Montant libre',actif:true},
 ];
+let PRESTS=JSON.parse(localStorage.getItem(sk('prests'))||'null')||PRESTS_DEFAULT.map(p=>({...p}));
+function savePrests(){localStorage.setItem(sk('prests'),JSON.stringify(PRESTS));}
 
 /* ================================================================
    HELPERS
@@ -1097,7 +1498,7 @@ function go(id,el){
   if(id==='rapports')renderRapports();
   if(id==='redevances')renderRed();
   if(id==='lotissements')renderLots();
-  if(id==='config')loadConfig();
+  if(id==='config'){loadConfig();showCfgTab('general');}
   updBadges();
 }
 
@@ -1313,6 +1714,7 @@ function renderDT(){
       <td>${bdgDT(d.statut)}</td>
       <td>${lACD?`<span class="tnum">${lACD}</span>`:'—'}</td>
       <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="apercuDT(${idx})">👁 Aperçu</button>
         <button class="btn btn-sm" onclick="editDT(${idx})">Modifier</button>
         <button class="btn btn-sm" onclick="openStDT(${idx})">Statut</button>
         <button class="btn btn-sm btn-danger" onclick="delDT(${idx})">✕</button>
@@ -1549,6 +1951,7 @@ function renderACD(){
       <td>${a.dt_ref?`<span class="tnum" style="font-size:11px">${a.dt_ref}</span>`:'—'}</td>
       <td>${bdgACD(a.statut)}${retraitInfo}</td>
       <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="apercuACD(${idx})">👁 Aperçu</button>
         <button class="btn btn-sm" onclick="editACD(${idx})">Modifier</button>
         <button class="btn btn-sm" onclick="openStACD(${idx})">Statut</button>
         ${a.acdDoc?`<button class="btn btn-sm btn-b" onclick="viewFData(ACD[${idx}].acdDoc.data,ACD[${idx}].acdDoc.name)">Doc</button>`:''}
@@ -1570,15 +1973,18 @@ function fillCKSel(){
 function renderPrestations(){
   const q=g('q-prest')?.value?.toLowerCase()||'';
   const div=g('prestations-list');if(!div)return;
-  const filtered=PRESTS.filter(p=>!q||p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+  const filtered=PRESTS.filter(p=>p.actif!==false&&(!q||p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
   const cats={};filtered.forEach(p=>{if(!cats[p.cat])cats[p.cat]=[];cats[p.cat].push(p);});
   div.innerHTML=Object.entries(cats).map(([cat,prests])=>`
     <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;padding:8px 4px 4px">${cat}</div>
     ${prests.map(p=>{const gi=PRESTS.indexOf(p);return `<div class="prest-card ${_selPrest===gi?'selected':''}" onclick="selPrest(${gi})">
-      <div class="prest-title">${p.label}</div>
-      <div class="prest-amt">${p.montant===0?'GRATUIT':fmt(p.montant)+' F CFA'}</div>
-      <div class="prest-desc">${p.desc}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div class="prest-title" style="flex:1">${p.label}</div>
+        <div class="prest-amt">${p.montant===0?'GRATUIT':fmt(p.montant)+' F'}</div>
+      </div>
+      <div class="prest-desc">${p.desc||''}</div>
     </div>`}).join('')}`).join('');
+  if(!Object.keys(cats).length)div.innerHTML='<div class="empty"><p>Aucune prestation active trouvée.</p></div>';
 }
 function selPrest(idx){
   _selPrest=idx;const p=PRESTS[idx];
@@ -1745,26 +2151,39 @@ function renderWF(){
    DASHBOARD
 ================================================================ */
 function updDash(){
-  g('s-dt').textContent=DT.length;
-  g('s-dt-enc').textContent=DT.filter(d=>d.statut==='en_cours').length;
-  g('s-appr').textContent=ACD.filter(a=>a.statut==='approuve').length;
-  g('s-retrait').textContent=ACD.filter(a=>a.statut==='retrait').length;
+  // Anciens IDs (compatibilité)
+  const se=id=>{const e=g(id);if(e)e.textContent=''};
+  // Bandeau bienvenue
+  const u=SESSION&&SESSION.user;
+  const nom=u?(u.fullname||u.username):'';
+  const hd=g('dash-hello');
+  if(hd){
+    const h=new Date().getHours();
+    const sal=h<12?'Bonjour':'Bonsoir';
+    hd.textContent=sal+(nom?' '+nom.split(' ')[0]+' !':'!');
+  }
+  const dd=g('dash-date');
+  if(dd){
+    const now=new Date();
+    dd.textContent=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+      +' — '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  }
+  // Compteurs bandeau
+  if(g('dash-nb-dt'))g('dash-nb-dt').textContent=DT.length;
+  if(g('dash-nb-acd'))g('dash-nb-acd').textContent=ACD.length;
+  if(g('dash-nb-caisse'))g('dash-nb-caisse').textContent=CAISSE.length;
   const today=new Date().toISOString().split('T')[0];
   const todayAmt=CAISSE.filter(c=>c.date===today).reduce((s,c)=>s+(c.paye||0),0);
-  g('s-caisse').textContent=fmt(todayAmt)+' F';
-  const dtl=DT.slice(-5).reverse();
-  const dtb=g('dash-dt-tb');
-  dtb.innerHTML=dtl.length?dtl.map(d=>{
-    const pieces=PIECES[d.type]||[],files=_FS[d.fkey]||{};
-    const pct=Math.round(pieces.filter(p=>files[p.id]).length/pieces.length*100);
-    return `<tr><td><span class="tnum">${d.ref}</span></td><td>${d.nom}</td><td><span class="tag tgl">${TYL[d.type]||d.type}</span></td>
-    <td><div style="font-size:10px;margin-bottom:2px">${pct}%</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></td>
-    <td>${bdgDT(d.statut)}</td></tr>`;}).join(''):'<tr><td colspan="5"><div class="empty"><p>Aucun DT</p></div></td></tr>';
-  const acdb=g('dash-acd-tb');
-  const acds=ACD.slice(-5).reverse();
-  acdb.innerHTML=acds.length?acds.map(a=>`<tr><td>${a.date||'—'}</td><td><span class="tnum">${a.atv||'—'}</span></td><td><strong>${a.nom}</strong></td><td>${a.ilot||'—'}</td><td>${a.lot||'—'}</td><td>${a.lotissement?'<span class="tag tgl">'+a.lotissement+'</span>':'—'}</td><td>${bdgACD(a.statut)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty"><p>Aucun ACD</p></div></td></tr>';
+  if(g('dash-recettes'))g('dash-recettes').textContent=fmt(todayAmt)+' F';
+  // Sous-titres dynamiques cartes modules
+  if(g('dm-dt-sub'))g('dm-dt-sub').textContent=DT.length+' dossier(s) · '+DT.filter(d=>d.statut==='en_cours').length+' en cours';
+  if(g('dm-acd-sub'))g('dm-acd-sub').textContent=ACD.length+' ACD · '+ACD.filter(a=>a.statut==='approuve').length+' approuvé(s)';
+  if(g('dm-caisse-sub'))g('dm-caisse-sub').textContent=CAISSE.length+' reçu(s) · '+fmt(todayAmt)+' F aujourd\'hui';
+  if(g('dm-wf-sub'))g('dm-wf-sub').textContent=(DT.filter(d=>d.statut!=='valide').length+ACD.filter(a=>a.statut!=='approuve'&&a.statut!=='retrait').length)+' dossier(s) en attente';
+  if(g('dm-lot-sub'))g('dm-lot-sub').textContent=LOTS.length+' lotissement(s)';
   renderTL();
 }
+
 function renderTL(){
   const ul=g('tl-ul');const items=[...TL].reverse().slice(0,12);
   if(!items.length){ul.innerHTML='<li class="tli"><div class="tldc"><div class="tldot"></div></div><div><div class="tlmsg">Application démarrée</div><div class="tlmt">Système</div></div></li>';return;}
@@ -1904,17 +2323,487 @@ function exportCSV(){
 }
 
 /* ================================================================
+   CONFIG TABS
+================================================================ */
+function showCfgTab(tab){
+  ['general','users','caisse','sync'].forEach(t=>{
+    const pane=g('cfg-pane-'+t);if(pane)pane.style.display=t===tab?'block':'none';
+    const ctab=g('ctab-'+t);if(ctab)ctab.classList.toggle('active',t===tab);
+  });
+  if(tab==='users')renderUsers();
+  if(tab==='caisse')renderCfgPrests();
+  if(tab==='sync')updSyncStats();
+}
+
+/* ================================================================
+   CONFIG PRESTATIONS
+================================================================ */
+let _ePrest=-1;
+
+function renderCfgPrests(){
+  const q=(g('q-cfg-prest')?.value||'').toLowerCase();
+  const catF=g('f-cfg-prest-cat')?.value||'';
+
+  // Remplir le datalist et le filtre catégorie
+  const cats=[...new Set(PRESTS.map(p=>p.cat))].sort();
+  const catSel=g('f-cfg-prest-cat');
+  if(catSel){
+    const v=catSel.value;
+    catSel.innerHTML='<option value="">Toutes catégories</option>';
+    cats.forEach(c=>catSel.insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`));
+    catSel.value=v;
+  }
+  const dl=g('prest-cats-list');
+  if(dl)dl.innerHTML=cats.map(c=>`<option value="${c}">`).join('');
+
+  // Filtrer
+  const data=PRESTS.filter(p=>{
+    const mq=!q||p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q);
+    return mq&&(!catF||p.cat===catF);
+  });
+
+  // Compteurs
+  const nActif=PRESTS.filter(p=>p.actif!==false).length;
+  const nInactif=PRESTS.filter(p=>p.actif===false).length;
+  const g2=id=>document.getElementById(id);
+  if(g2('prest-count-actif'))g2('prest-count-actif').textContent=`✓ ${nActif} prestation(s) active(s)`;
+  if(g2('prest-count-inactif'))g2('prest-count-inactif').textContent=`✕ ${nInactif} inactive(s)`;
+  if(g2('prest-count-total'))g2('prest-count-total').textContent=`Total : ${PRESTS.length}`;
+
+  const tb=g('cfg-prest-tbody');if(!tb)return;
+  if(!data.length){
+    tb.innerHTML='<tr><td colspan="6"><div class="empty"><p>Aucune prestation trouvée.</p></div></td></tr>';return;
+  }
+  tb.innerHTML=data.map(p=>{
+    const idx=PRESTS.indexOf(p);
+    const isDefault=PRESTS_DEFAULT.some(d=>d.id===p.id);
+    const actif=p.actif!==false;
+    const prixFmt=p.montant===0?'<span style="color:var(--cg);font-weight:700">GRATUIT</span>'
+      :`<span style="font-family:\'Syne\',sans-serif;font-weight:700;color:#B45309">${fmt(p.montant)} F</span>`;
+    return `<tr style="opacity:${actif?1:.5}">
+      <td><strong>${p.label}</strong>${isDefault?'<span style="font-size:9px;color:var(--tx3);margin-left:6px">par défaut</span>':''}</td>
+      <td><span class="tag tgl" style="font-size:9px">${p.cat}</span></td>
+      <td>${prixFmt}</td>
+      <td style="font-size:11px;color:var(--tx2);max-width:160px">${p.desc||'—'}</td>
+      <td>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;font-weight:500;color:${actif?'var(--cg)':'#991B1B'}">
+          <input type="checkbox" ${actif?'checked':''} onchange="togglePrestActif(${idx},this.checked)" style="accent-color:var(--cg);width:14px;height:14px">
+          ${actif?'Actif':'Inactif'}
+        </label>
+      </td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="editPrestModal(${idx})">Modifier</button>
+        ${!isDefault?`<button class="btn btn-sm btn-danger" onclick="deletePrest(${idx})">✕</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openPrestModal(){
+  _ePrest=-1;
+  g('m-prest-title').textContent='Nouvelle prestation';
+  g('p-label').value='';g('p-cat').value='';
+  g('p-montant').value='';g('p-desc').value='';
+  g('p-actif').value='1';
+  g('p-alert').className='alert alert-err';
+  openM('m-prest');
+}
+
+function editPrestModal(idx){
+  _ePrest=idx;
+  const p=PRESTS[idx];
+  g('m-prest-title').textContent='Modifier — '+p.label.slice(0,30)+(p.label.length>30?'…':'');
+  g('p-label').value=p.label;
+  g('p-cat').value=p.cat;
+  g('p-montant').value=p.montant;
+  g('p-desc').value=p.desc||'';
+  g('p-actif').value=p.actif===false?'0':'1';
+  g('p-alert').className='alert alert-err';
+  openM('m-prest');
+}
+
+function savePrest(){
+  const label=g('p-label').value.trim();
+  const cat=g('p-cat').value.trim();
+  const montant=parseInt(g('p-montant').value)||0;
+  const desc=g('p-desc').value.trim();
+  const actif=g('p-actif').value==='1';
+  const alertEl=g('p-alert');
+  if(!label){alertEl.textContent='Le libellé est obligatoire';alertEl.className='alert alert-err show';return;}
+  if(!cat){alertEl.textContent='La catégorie est obligatoire';alertEl.className='alert alert-err show';return;}
+  if(_ePrest>=0){
+    PRESTS[_ePrest]={...PRESTS[_ePrest],label,cat,montant,desc,actif};
+    toast('Prestation modifiée ✓');
+    addTL(`Prestation modifiée : "${label}"`);
+  } else {
+    const id='p_'+Date.now();
+    PRESTS.push({id,label,cat,montant,desc,actif});
+    toast('Prestation ajoutée ✓');
+    addTL(`Nouvelle prestation : "${label}" — ${fmt(montant)} F`);
+  }
+  savePrests();closeM('m-prest');renderCfgPrests();
+}
+
+function togglePrestActif(idx,val){
+  PRESTS[idx].actif=val;
+  savePrests();renderCfgPrests();
+  toast(val?'Prestation activée ✓':'Prestation désactivée');
+}
+
+function deletePrest(idx){
+  const p=PRESTS[idx];
+  if(!confirm(`Supprimer "${p.label}" ?`))return;
+  PRESTS.splice(idx,1);savePrests();renderCfgPrests();
+  toast('Prestation supprimée');addTL(`Prestation supprimée : "${p.label}"`);
+}
+
+function resetPrestsDefault(){
+  if(!confirm('Remettre toutes les prestations par défaut ?\nVos ajouts et modifications personnalisées seront conservés séparément.'))return;
+  // Fusionner : garder les persos, remettre les prix défaut sur les standards
+  const persos=PRESTS.filter(p=>!PRESTS_DEFAULT.some(d=>d.id===p.id));
+  PRESTS=[...PRESTS_DEFAULT.map(p=>({...p})),...persos];
+  savePrests();renderCfgPrests();
+  toast('Prestations par défaut restaurées ✓');
+}
+let USERS=[];
+let _eUser=-1;
+
+function loadUsers(){
+  USERS=JSON.parse(localStorage.getItem(sk('users'))||'[]');
+}
+function saveUsers(){
+  localStorage.setItem(sk('users'),JSON.stringify(USERS));
+}
+
+const ALL_MODULES=['dashboard','dt','acd','caisse','workflow','rapports','nomenclature','redevances','lotissements','config'];
+const MODULE_LABELS={dashboard:'Tableau de bord',dt:'Dossiers Techniques',acd:'Registre ACD',caisse:'Caisse',workflow:'Workflow',rapports:'Rapports',nomenclature:'Nomenclature',redevances:'Redevances',lotissements:'Lotissements',config:'Configuration'};
+const ROLE_DEFAULT_MODULES={
+  admin:ALL_MODULES,
+  superviseur:['dashboard','dt','acd','caisse','workflow','rapports','nomenclature','redevances','lotissements'],
+  agent:['dashboard','dt','acd','nomenclature','redevances','lotissements'],
+  caissier:['dashboard','caisse','nomenclature','redevances']
+};
+const ROLE_LABELS={admin:'Administrateur',superviseur:'Superviseur',agent:'Agent Guichet',caissier:'Caissier'};
+const ROLE_CLASS={admin:'role-admin',superviseur:'role-superviseur',agent:'role-agent',caissier:'role-caissier'};
+
+function renderUsers(){
+  loadUsers();
+  const tb=g('users-tbody');
+  if(!USERS.length){
+    tb.innerHTML='<tr><td colspan="6"><div class="empty"><p>Aucun utilisateur. Cliquez sur "+ Nouvel utilisateur".</p></div></td></tr>';
+    return;
+  }
+  tb.innerHTML=USERS.map((u,i)=>{
+    const mods=(u.modules||[]).map(m=>`<span class="mod-chip">${MODULE_LABELS[m]||m}</span>`).join('');
+    const roleCls=ROLE_CLASS[u.role]||'role-agent';
+    const actif=u.actif!==false;
+    return `<tr>
+      <td><strong>${u.fullname||u.username}</strong></td>
+      <td><span class="tnum">${u.username}</span></td>
+      <td><span class="badge ${roleCls}" style="border-radius:8px">${ROLE_LABELS[u.role]||u.role}</span></td>
+      <td style="max-width:220px;line-height:1.8">${mods||'—'}</td>
+      <td><span class="badge ${actif?'ba':'bn'}">${actif?'Actif':'Inactif'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="editUserModal(${i})">Modifier</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteUser(${i})">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openUserModal(){
+  _eUser=-1;
+  g('m-user-title').textContent='Nouvel utilisateur';
+  g('u-fullname').value='';g('u-username').value='';g('u-password').value='';g('u-password2').value='';
+  g('u-role').value='agent';g('u-actif').value='1';
+  g('u-alert').className='alert alert-err';
+  updUserRoleModules();
+  openM('m-user');
+}
+
+function editUserModal(i){
+  loadUsers();
+  _eUser=i;
+  const u=USERS[i];
+  g('m-user-title').textContent='Modifier — '+u.username;
+  g('u-fullname').value=u.fullname||'';
+  g('u-username').value=u.username||'';
+  g('u-password').value='';g('u-password2').value='';
+  g('u-role').value=u.role||'agent';
+  g('u-actif').value=u.actif===false?'0':'1';
+  g('u-alert').className='alert alert-err';
+  // Cocher les modules
+  document.querySelectorAll('[name=umod]').forEach(cb=>{
+    cb.checked=(u.modules||[]).includes(cb.value);
+  });
+  openM('m-user');
+}
+
+function updUserRoleModules(){
+  const role=g('u-role').value;
+  const defaults=ROLE_DEFAULT_MODULES[role]||[];
+  document.querySelectorAll('[name=umod]').forEach(cb=>{
+    cb.checked=defaults.includes(cb.value);
+  });
+}
+
+function saveUser(){
+  const fullname=g('u-fullname').value.trim();
+  const username=g('u-username').value.trim().toLowerCase();
+  const pass=g('u-password').value;
+  const pass2=g('u-password2').value;
+  const role=g('u-role').value;
+  const actif=g('u-actif').value==='1';
+  const mods=[...document.querySelectorAll('[name=umod]:checked')].map(c=>c.value);
+  const alertEl=g('u-alert');
+
+  if(!username){alertEl.textContent='Identifiant obligatoire';alertEl.className='alert alert-err show';return;}
+  if(_eUser===-1&&!pass){alertEl.textContent='Mot de passe obligatoire';alertEl.className='alert alert-err show';return;}
+  if(pass&&pass!==pass2){alertEl.textContent='Les mots de passe ne correspondent pas';alertEl.className='alert alert-err show';return;}
+
+  loadUsers();
+  const dup=USERS.find((u,i)=>u.username===username&&i!==_eUser);
+  if(dup){alertEl.textContent='Identifiant déjà utilisé';alertEl.className='alert alert-err show';return;}
+
+  const entry={
+    fullname,username,role,actif,modules:mods,
+    password:pass?btoa(pass):(_eUser>=0?USERS[_eUser].password:''),
+    createdAt:_eUser>=0?USERS[_eUser].createdAt:new Date().toISOString()
+  };
+  if(_eUser>=0)USERS[_eUser]=entry;else USERS.push(entry);
+  saveUsers();
+  addTL(_eUser>=0?`Utilisateur "${username}" modifié`:`Utilisateur "${username}" créé`);
+  closeM('m-user');renderUsers();
+  toast(_eUser>=0?'Utilisateur modifié ✓':'Utilisateur créé ✓');
+}
+
+function deleteUser(i){
+  loadUsers();
+  const u=USERS[i];
+  if(u.username===(SESSION&&SESSION.user&&SESSION.user.username)){toast('Impossible de supprimer votre propre compte','err');return;}
+  USERS.splice(i,1);saveUsers();renderUsers();
+  toast('Utilisateur supprimé');
+}
+
+/* ================================================================
+   EXPORT / IMPORT / SAUVEGARDE
+================================================================ */
+function updSyncStats(){
+  loadUsers();
+  const el=g('sync-stats');
+  if(el)el.innerHTML=`<strong>${DT.length}</strong> dossiers DT · <strong>${ACD.length}</strong> ACD · <strong>${CAISSE.length}</strong> encaissements · <strong>${USERS.length}</strong> utilisateurs`;
+  // Afficher historique
+  const hist=JSON.parse(localStorage.getItem(sk('backups'))||'[]');
+  const hel=g('backup-history');
+  if(hel)hel.innerHTML=hist.length?hist.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--brd)"><span>📦 ${b.label}</span><span style="font-size:10px;color:var(--tx3)">${b.date}</span></div>`).join(''):'Aucune sauvegarde enregistrée.';
+  // Charger config sync
+  const sc=JSON.parse(localStorage.getItem(sk('synccfg'))||'{}');
+  if(g('sync-api-key'))g('sync-api-key').value=sc.apiKey||'';
+  if(g('sync-bin-id'))g('sync-bin-id').value=sc.binId||'';
+  if(g('sync-interval'))g('sync-interval').value=sc.interval||30;
+}
+
+function saveSyncCfg(){
+  const sc={apiKey:g('sync-api-key')?.value||'',binId:g('sync-bin-id')?.value||'',interval:parseInt(g('sync-interval')?.value)||30};
+  localStorage.setItem(sk('synccfg'),JSON.stringify(sc));
+}
+
+function exportData(){
+  loadUsers();
+  const payload={
+    version:2,exportedAt:new Date().toISOString(),siteId:SITE_ID,
+    cfg:CFG,dt:DT,acd:ACD,caisse:CAISSE,lots:LOTS,tl:TL,users:USERS,files:_FS,prests:PRESTS
+  };
+  const json=JSON.stringify(payload);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const label=CFG.appName+'_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.href=url;a.download=label;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  // Enregistrer dans l'historique
+  const hist=JSON.parse(localStorage.getItem(sk('backups'))||'[]');
+  hist.unshift({label,date:new Date().toLocaleString('fr-FR')});
+  localStorage.setItem(sk('backups'),JSON.stringify(hist.slice(0,10)));
+  updSyncStats();
+  toast('Sauvegarde téléchargée ✓');
+}
+
+function importData(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.version||!d.dt||!d.acd){toast('Fichier invalide ou corrompu','err');return;}
+      if(!confirm(`Restaurer les données du ${new Date(d.exportedAt).toLocaleDateString('fr-FR')} ?\nCela remplacera TOUTES vos données actuelles.`))return;
+      if(d.cfg){CFG={...CFG,...d.cfg};localStorage.setItem(sk('cfg'),JSON.stringify(CFG));}
+      if(d.dt){DT=d.dt;localStorage.setItem(sk('dt'),JSON.stringify(DT));}
+      if(d.acd){ACD=d.acd;localStorage.setItem(sk('acd'),JSON.stringify(ACD));}
+      if(d.caisse){CAISSE=d.caisse;localStorage.setItem(sk('caisse'),JSON.stringify(CAISSE));}
+      if(d.lots){LOTS=d.lots;localStorage.setItem(sk('lots'),JSON.stringify(LOTS));}
+      if(d.tl){TL=d.tl;localStorage.setItem(sk('tl'),JSON.stringify(TL));}
+      if(d.users){localStorage.setItem(sk('users'),JSON.stringify(d.users));}
+      if(d.prests){PRESTS=d.prests;localStorage.setItem(sk('prests'),JSON.stringify(PRESTS));}
+      if(d.files){_FS=d.files;localStorage.setItem(sk('files'),JSON.stringify(_FS));}
+      applyConfig();updDash();updBadges();updSyncStats();
+      toast('Données restaurées avec succès ✓');
+      addTL('Restauration depuis fichier de sauvegarde');
+    }catch(ex){toast('Erreur lors de la lecture du fichier','err');}
+  };
+  r.readAsText(file);
+}
+
+function doCloudSync(dir){
+  const sc=JSON.parse(localStorage.getItem(sk('synccfg'))||'{}');
+  const apiKey=sc.apiKey;const binId=sc.binId;
+  const el=g('sync-cloud-status');
+  if(!apiKey||!binId){if(el)el.textContent='⚠ Clé API et ID Bin requis';toast('Configurez la clé API et le Bin ID','err');return;}
+  if(el)el.textContent='Synchronisation en cours...';
+  if(dir==='up'){
+    loadUsers();
+    const payload={version:2,exportedAt:new Date().toISOString(),dt:DT,acd:ACD,caisse:CAISSE,lots:LOTS,cfg:CFG};
+    fetch(`https://api.jsonbin.io/v3/b/${binId}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':apiKey},body:JSON.stringify(payload)})
+      .then(r=>r.json()).then(()=>{if(el)el.textContent='✓ Envoyé — '+new Date().toLocaleTimeString('fr-FR');toast('Données envoyées au cloud ✓');})
+      .catch(()=>{if(el)el.textContent='✗ Erreur réseau';toast('Échec de la synchronisation','err');});
+  } else {
+    fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`,{headers:{'X-Master-Key':apiKey}})
+      .then(r=>r.json()).then(d=>{
+        if(d.record){
+          const rec=d.record;
+          if(rec.dt){DT=rec.dt;localStorage.setItem(sk('dt'),JSON.stringify(DT));}
+          if(rec.acd){ACD=rec.acd;localStorage.setItem(sk('acd'),JSON.stringify(ACD));}
+          if(rec.caisse){CAISSE=rec.caisse;localStorage.setItem(sk('caisse'),JSON.stringify(CAISSE));}
+          if(rec.lots){LOTS=rec.lots;localStorage.setItem(sk('lots'),JSON.stringify(LOTS));}
+          updDash();updBadges();
+          if(el)el.textContent='✓ Récupéré — '+new Date().toLocaleTimeString('fr-FR');
+          toast('Données récupérées depuis le cloud ✓');
+        }
+      }).catch(()=>{if(el)el.textContent='✗ Erreur réseau';toast('Échec de la synchronisation','err');});
+  }
+}
+
+/* ================================================================
+   APERÇU DOCUMENT — DT
+================================================================ */
+function apercuDT(idx){
+  const d=DT[idx];
+  const pieces=PIECES[d.type]||[];
+  const files=_FS[d.fkey]||{};
+  const done=pieces.filter(p=>files[p.id]).length;
+  const logoHtml=CFG.logoData?`<img src="${CFG.logoData}" style="width:48px;height:48px;object-fit:cover;border-radius:8px">`
+    :`<div style="width:48px;height:48px;background:#E8820C;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></div>`;
+  const piecesHtml=pieces.map(p=>{
+    const ok=!!files[p.id];
+    const cls=ok?'ap-ok':p.req?'ap-obl':'ap-pend';
+    const lbl=ok?'Fourni':p.req?'Manquant (obligatoire)':'En attente (facultatif)';
+    return `<div class="apercu-piece"><div class="apercu-dot ${cls}"></div><span style="${!ok&&p.req?'color:#B45309;font-weight:600':''}">
+      ${p.label}</span><span style="margin-left:auto;font-size:10px;color:${ok?'#0A5C35':p.req?'#B45309':'#9A9A92'}">${lbl}</span></div>`;
+  }).join('');
+  const pct=Math.round(done/pieces.length*100);
+  const html=`<div class="apercu-sheet">
+    <div class="apercu-head">
+      <div>${logoHtml}<div class="apercu-org" style="margin-top:6px">${CFG.orgName}</div><div style="font-size:10px;color:#666">${CFG.orgSub}</div></div>
+      <div style="text-align:right">
+        <div class="apercu-type">DOSSIER TECHNIQUE</div>
+        <div class="apercu-ref">${d.ref}</div>
+        <div style="margin-top:6px;font-size:11px;color:#666">Progression : ${pct}% (${done}/${pieces.length})</div>
+      </div>
+    </div>
+    <div class="apercu-sec">Informations du requérant</div>
+    <div class="apercu-grid">
+      <div class="apercu-row"><span class="apercu-lbl">Nom et Prénoms</span><span class="apercu-val">${d.nom}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Type dossier</span><span class="apercu-val">${TYL[d.type]||d.type}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">N° Pièce d'identité</span><span class="apercu-val">${d.idType||'—'} ${d.idNum||''}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Contact</span><span class="apercu-val">${d.tel||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Type requérant</span><span class="apercu-val">${{physique:'Pers. physique',morale:'Pers. morale',ong:'ONG / Asso.'}[d.req]||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Date de constitution</span><span class="apercu-val">${d.date?new Date(d.date).toLocaleDateString('fr-FR'):'—'}</span></div>
+    </div>
+    <div class="apercu-sec">Informations foncières</div>
+    <div class="apercu-grid">
+      <div class="apercu-row"><span class="apercu-lbl">Lotissement</span><span class="apercu-val">${d.lotissement||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Commune / Quartier</span><span class="apercu-val">${[d.commune,d.quartier].filter(Boolean).join(' / ')||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Ilôt</span><span class="apercu-val">${d.ilot||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Lot</span><span class="apercu-val">${d.lot_n||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Superficie</span><span class="apercu-val">${d.sup?d.sup+' m²':'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Statut</span><span class="apercu-val">${DTL[d.statut]||d.statut}</span></div>
+    </div>
+    <div class="apercu-sec">Pièces du dossier (${done}/${pieces.length})</div>
+    ${piecesHtml}
+    ${d.obs?`<div class="apercu-sec">Observations</div><p style="font-size:11px;color:#5A5A54;padding:8px;background:#f9f9f7;border-radius:6px">${d.obs}</p>`:''}
+    <div style="margin-top:20px;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:10px;color:#9A9A92">
+      <span>Généré le ${new Date().toLocaleString('fr-FR')}</span><span>${CFG.appName} — ${CFG.orgSub}</span>
+    </div>
+  </div>`;
+  g('m-apercu-title').textContent='Aperçu — DT '+d.ref;
+  g('m-apercu-body').innerHTML=html;
+  openM('m-apercu');
+}
+
+/* ================================================================
+   APERÇU DOCUMENT — ACD
+================================================================ */
+function apercuACD(idx){
+  const a=ACD[idx];
+  const logoHtml=CFG.logoData?`<img src="${CFG.logoData}" style="width:48px;height:48px;object-fit:cover;border-radius:8px">`
+    :`<div style="width:48px;height:48px;background:#E8820C;border-radius:8px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></div>`;
+  const cessHtml=(a.cessionnaires||[]).filter(c=>c.nom).map((c,i)=>`
+    <div class="apercu-row"><span class="apercu-lbl">Cessionnaire ${i+1}</span><span class="apercu-val">${c.nom}${c.idNum?' — '+c.idNum:''}</span></div>`).join('');
+  const html=`<div class="apercu-sheet">
+    <div class="apercu-head">
+      <div>${logoHtml}<div class="apercu-org" style="margin-top:6px">${CFG.orgName}</div><div style="font-size:10px;color:#666">${CFG.orgSub}</div></div>
+      <div style="text-align:right">
+        <div class="apercu-type">ATTESTATION DE CONCESSION</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+          ${a.atv?`<div class="apercu-ref" style="background:#1565C0">ATV ${a.atv}</div>`:''}
+          ${a.acd?`<div class="apercu-ref">N° ${a.acd}</div>`:''}
+        </div>
+        <div style="margin-top:8px">${({approuve:'<span style="color:#0A5C35;font-weight:700">● APPROUVÉ</span>',encours:'<span style="color:#1D4ED8;font-weight:700">● EN COURS</span>',attente:'<span style="color:#B45309;font-weight:700">● EN ATTENTE</span>','non-approuve':'<span style="color:#991B1B;font-weight:700">● NON APPROUVÉ</span>',retrait:'<span style="color:#0891B2;font-weight:700">● RETIRÉ</span>'}[a.statut]||a.statut)}</div>
+      </div>
+    </div>
+    <div class="apercu-sec">Informations du bénéficiaire</div>
+    <div class="apercu-grid">
+      <div class="apercu-row"><span class="apercu-lbl">Nom et Prénoms</span><span class="apercu-val" style="color:#0A5C35">${a.nom}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">N° Pièce</span><span class="apercu-val">${a.idType||'—'} ${a.idNum||''}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Contact</span><span class="apercu-val">${a.tel||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Date ACD</span><span class="apercu-val">${a.date?new Date(a.date).toLocaleDateString('fr-FR'):'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Type</span><span class="apercu-val">${a.type||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">DT lié</span><span class="apercu-val">${a.dt_ref||'—'}</span></div>
+    </div>
+    ${cessHtml?`<div class="apercu-sec">Cessionnaires</div><div class="apercu-grid">${cessHtml}</div>`:''}
+    <div class="apercu-sec">Informations foncières</div>
+    <div class="apercu-grid">
+      <div class="apercu-row"><span class="apercu-lbl">Lotissement</span><span class="apercu-val">${a.lotissement||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Commune / Quartier</span><span class="apercu-val">${[a.commune,a.quartier].filter(Boolean).join(' / ')||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Ilôt</span><span class="apercu-val">${a.ilot||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Lot</span><span class="apercu-val">${a.lot||'—'}</span></div>
+      <div class="apercu-row"><span class="apercu-lbl">Superficie</span><span class="apercu-val">${a.sup?a.sup+' m²':'—'}</span></div>
+      ${a.retraitDate?`<div class="apercu-row"><span class="apercu-lbl">Date retrait</span><span class="apercu-val">${new Date(a.retraitDate).toLocaleDateString('fr-FR')}</span></div>`:''}
+      ${a.retraitPar?`<div class="apercu-row"><span class="apercu-lbl">Retiré par</span><span class="apercu-val">${a.retraitPar}</span></div>`:''}
+    </div>
+    ${a.obs?`<div class="apercu-sec">Observations</div><p style="font-size:11px;color:#5A5A54;padding:8px;background:#f9f9f7;border-radius:6px">${a.obs}</p>`:''}
+    <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div style="border-top:1px solid #ccc;padding-top:6px;font-size:10px;color:#666;text-align:center">Signature du bénéficiaire<br><br><br></div>
+      <div style="border-top:1px solid #ccc;padding-top:6px;font-size:10px;color:#666;text-align:center">Cachet &amp; Signature agent<br><br><br></div>
+    </div>
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:10px;color:#9A9A92">
+      <span>Généré le ${new Date().toLocaleString('fr-FR')}</span><span>${CFG.appName} — ${CFG.orgSub}</span>
+    </div>
+  </div>`;
+  g('m-apercu-title').textContent='Aperçu ACD — '+(a.atv||a.nom);
+  g('m-apercu-body').innerHTML=html;
+  openM('m-apercu');
+}
+/* ================================================================
    MODALS
 ================================================================ */
 function openM(id){g(id).classList.add('open');}
 function closeM(id){g(id).classList.remove('open');}
-document.querySelectorAll('.mov').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)closeM(this.id);}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mov.open').forEach(m=>m.classList.remove('open'));closeViewer();}});
 
 /* ================================================================
    INIT
 ================================================================ */
-applyConfig();loadConfig();
+applyConfig();loadConfig();loadUsers();
 fillLS('dt-lot');fillLS('fa-lotissement');
 updDash();updBadges();
 const todayStr=new Date().toISOString().split('T')[0];
