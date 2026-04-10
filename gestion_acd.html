@@ -299,37 +299,104 @@ tbody tr:hover td{background:var(--cgp)}
 .ls-err{background:#FEE2E2;color:#991B1B;border:1px solid rgba(153,27,27,.2);border-radius:10px;padding:9px 13px;font-size:12px;margin-bottom:12px;display:none}
 .ls-err.show{display:block}
 .ls-footer{font-size:11px;color:var(--tx3);margin-top:18px;text-align:center}
+.ls-btn-sec{width:100%;padding:9px;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border:1.5px solid var(--brd);background:var(--sur);color:var(--tx2);transition:all .15s;display:block;text-align:center}
+.ls-btn-sec:hover{border-color:var(--cg);color:var(--cg)}
+/* Cartes site sur écran login */
+.ls-site-card{border:1px solid var(--brd);border-radius:12px;padding:13px 15px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;background:var(--sur)}
+.ls-site-card:hover{border-color:var(--cg);background:var(--cgp);transform:translateX(3px)}
+.ls-site-ico{width:36px;height:36px;border-radius:10px;background:var(--cg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ls-site-ico svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+.ls-site-info{flex:1}
+.ls-site-name{font-weight:700;font-size:13px;color:var(--tx)}
+.ls-site-loc{font-size:10px;color:var(--tx3);margin-top:2px}
+.ls-site-arrow{color:var(--cg);font-size:18px;font-weight:700;opacity:.5}
+/* Cartes utilisateur rapide */
+.ls-ucard{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--brd);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:6px}
+.ls-ucard:hover{border-color:var(--cg);background:var(--cgp)}
+.ls-uava{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.ls-uname{font-size:13px;font-weight:600;color:var(--tx)}
+.ls-urole{font-size:10px;color:var(--tx3);margin-top:1px}
 </style>
 </head>
 <body>
 
-<!-- ======== ÉCRAN DE CONNEXION INTÉGRÉ ======== -->
+<!-- ======== ÉCRAN DE CONNEXION ======== -->
 <div id="login-screen">
   <div class="ls-bar"><span style="background:var(--co)"></span><span style="background:#fff"></span><span style="background:#2E8B57"></span></div>
-  <div class="ls-box">
+
+  <!-- VUE : Choix du site -->
+  <div id="ls-view-site" class="ls-box" style="display:none">
     <div class="ls-head">
       <div class="ls-logo"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4"/></svg></div>
-      <h1>GestionACD</h1>
+      <h1 id="ls-app-title">GestionACD</h1>
       <p>Foncier Urbain — Côte d'Ivoire</p>
     </div>
     <div class="ls-body">
+      <div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:12px">Choisir votre bureau / site :</div>
+      <div id="ls-sites-list"></div>
+      <div style="margin-top:14px;border-top:1px solid var(--brd);padding-top:12px">
+        <button class="ls-btn-sec" onclick="showLsView('setup')">⚙ Première installation — Créer un site</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VUE : Connexion utilisateur -->
+  <div id="ls-view-login" class="ls-box" style="display:none">
+    <div class="ls-head">
+      <div class="ls-logo" id="ls-login-logo"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4"/></svg></div>
+      <h1 id="ls-site-name-lbl">GestionACD</h1>
+      <p id="ls-site-org-lbl">Foncier Urbain — Côte d'Ivoire</p>
+    </div>
+    <div class="ls-body">
       <div class="ls-err" id="ls-err"></div>
+
       <div class="ls-fg">
         <label>Nom d'utilisateur</label>
         <input type="text" id="ls-user" placeholder="ex : admin" autocomplete="username">
       </div>
-      <div class="ls-fg">
+      <div class="ls-fg" style="margin-bottom:14px">
         <label>Mot de passe</label>
-        <input type="password" id="ls-pass" placeholder="••••••••" autocomplete="current-password">
+        <div style="position:relative">
+          <input type="password" id="ls-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:40px">
+          <button type="button" onclick="togglePassVis()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--tx3);padding:4px">
+            <svg id="ls-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="ls-fg">
-        <label>Site actif</label>
-        <select id="ls-site"></select>
-      </div>
-      <button class="ls-btn" onclick="doInlineLogin()">Se connecter</button>
+      <button class="ls-btn" id="ls-connect-btn" onclick="doInlineLogin()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="16" height="16" style="margin-right:6px"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Se connecter
+      </button>
+      <button class="ls-btn-sec" onclick="showLsView('site')" style="margin-top:8px">← Changer de site</button>
     </div>
   </div>
-  <div class="ls-footer">GestionACD — Ministère de la Construction, du Logement et de l'Urbanisme</div>
+
+  <!-- VUE : Première installation -->
+  <div id="ls-view-setup" class="ls-box" style="display:none;max-width:460px">
+    <div class="ls-head">
+      <div class="ls-logo"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+      <h1>Première installation</h1>
+      <p>Configurez votre site GestionACD</p>
+    </div>
+    <div class="ls-body">
+      <div class="ls-err" id="ls-setup-err"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--cg);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Informations du site</div>
+      <div class="ls-fg"><label>Nom du site / Bureau <span style="color:var(--co)">*</span></label><input type="text" id="ls-s-name" placeholder="ex : Guichet Unique Cocody"></div>
+      <div class="ls-fg"><label>Organisation</label><input type="text" id="ls-s-org" placeholder="ex : Ministère de la Construction"></div>
+      <div class="ls-fg" style="margin-bottom:16px"><label>Localisation</label><input type="text" id="ls-s-loc" placeholder="ex : Abidjan, Cocody"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--cg);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Compte administrateur</div>
+      <div class="ls-fg"><label>Nom complet <span style="color:var(--co)">*</span></label><input type="text" id="ls-s-fullname" placeholder="ex : Konan KOUASSI"></div>
+      <div class="ls-fg"><label>Identifiant <span style="color:var(--co)">*</span></label><input type="text" id="ls-s-user" placeholder="ex : admin"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="ls-fg"><label>Mot de passe <span style="color:var(--co)">*</span></label><input type="password" id="ls-s-pass" placeholder="••••••••"></div>
+        <div class="ls-fg"><label>Confirmer</label><input type="password" id="ls-s-pass2" placeholder="••••••••"></div>
+      </div>
+      <button class="ls-btn" onclick="doSetupSite()" style="margin-top:6px">Créer le site et commencer →</button>
+      <button class="ls-btn-sec" onclick="showLsView('site')" style="margin-top:8px">← Annuler</button>
+    </div>
+  </div>
+
+  <div class="ls-footer" id="ls-footer-txt">GestionACD — Ministère de la Construction, du Logement et de l'Urbanisme</div>
 </div>
 <!-- ============================================= -->
 
@@ -405,7 +472,11 @@ tbody tr:hover td{background:var(--cgp)}
   </nav>
   <div class="ubar">
     <div class="ava" id="sb-ava">AG</div>
-    <div class="uinfo"><p id="sb-username">Agent Guichet</p><span id="sb-org">Ministère Construction</span></div>
+    <div class="uinfo">
+      <p id="sb-username">Agent Guichet</p>
+      <span id="sb-org">Ministère Construction</span>
+      <span id="sb-role-badge" style="display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:#374151;color:#fff;margin-top:3px">Agent</span>
+    </div>
     <button onclick="doLogout()" title="Déconnexion" style="margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;padding:5px 7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" width="15" height="15"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </button>
@@ -414,7 +485,13 @@ tbody tr:hover td{background:var(--cgp)}
 
 <div id="main">
   <div id="topbar">
-    <div><div id="tb-bc">GestionACD</div><div id="tb-ti">Tableau de bord</div></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="btn-retour" class="btn btn-ghost" style="display:none;gap:6px;padding:5px 11px" onclick="go('dashboard',document.querySelector('[data-page=dashboard]'))">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg>
+        Accueil
+      </button>
+      <div><div id="tb-bc">GestionACD</div><div id="tb-ti">Tableau de bord</div></div>
+    </div>
     <div class="tbr">
       <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
       <button class="btn btn-k" onclick="go('caisse-new',document.querySelector('[data-page=caisse-new]'))">+ Encaissement</button>
@@ -426,139 +503,96 @@ tbody tr:hover td{background:var(--cgp)}
 <!-- ========== DASHBOARD ========== -->
 <div id="page-dashboard" class="page active">
 
-  <!-- Bandeau de bienvenue -->
-  <div id="dash-welcome" style="background:linear-gradient(135deg,var(--cg) 0%,#0F7A47 100%);border-radius:var(--rlg);padding:22px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 4px 18px rgba(10,92,53,.25)">
+  <!-- En-tête discret -->
+  <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
     <div>
-      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff" id="dash-hello">Bonjour !</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:3px" id="dash-date"></div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
-        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-dt">0</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65)">DT</div>
-      </div>
-      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
-        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-acd">0</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65)">ACD</div>
-      </div>
-      <div style="background:rgba(255,255,255,.12);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:80px">
-        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff" id="dash-nb-caisse">0</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65)">Reçus</div>
-      </div>
-      <div style="background:rgba(232,130,12,.3);border:1px solid rgba(232,130,12,.5);border-radius:var(--rmd);padding:10px 16px;text-align:center;min-width:100px">
-        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff" id="dash-recettes">0 F</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65)">Recettes du jour</div>
-      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--tx)" id="dash-hello">Bonjour !</div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:2px" id="dash-date"></div>
     </div>
   </div>
 
   <!-- Grille des modules -->
-  <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:12px">Modules</div>
-  <div id="dash-modules-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px">
+  <div id="dash-modules-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:13px">
 
     <div class="dash-module" onclick="go('dt-liste',document.querySelector('[data-page=dt-liste]'))" style="--mc:#7B1FA2;--mcp:#F3E8FF">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
       <div class="dm-label">Dossiers Techniques</div>
-      <div class="dm-sub" id="dm-dt-sub">Registre DT</div>
+      <div class="dm-sub">Registre DT</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('dt-new',document.querySelector('[data-page=dt-new]'))" style="--mc:#7B1FA2;--mcp:#F3E8FF">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
       <div class="dm-label">Nouveau dossier DT</div>
       <div class="dm-sub">Créer un dossier technique</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('acd-liste',document.querySelector('[data-page=acd-liste]'))" style="--mc:var(--cg);--mcp:var(--cgp)">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
       <div class="dm-label">Registre ACD</div>
-      <div class="dm-sub" id="dm-acd-sub">Toutes les attestations</div>
+      <div class="dm-sub">Toutes les attestations</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('acd-new',document.querySelector('[data-page=acd-new]'))" style="--mc:var(--cg);--mcp:var(--cgp)">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
       <div class="dm-label">Nouvel ACD</div>
       <div class="dm-sub">Créer une attestation</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('caisse',document.querySelector('[data-page=caisse]'))" style="--mc:#B45309;--mcp:#FEF3E7">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
       <div class="dm-label">Caisse</div>
-      <div class="dm-sub" id="dm-caisse-sub">Encaissements</div>
+      <div class="dm-sub">Encaissements</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('caisse-new',document.querySelector('[data-page=caisse-new]'))" style="--mc:#B45309;--mcp:#FEF3E7">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
       <div class="dm-label">Nouvel encaissement</div>
       <div class="dm-sub">Saisir un reçu</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('workflow',document.querySelector('[data-page=workflow]'))" style="--mc:var(--co);--mcp:var(--cop)">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg></div>
       <div class="dm-label">Suivi Workflow</div>
-      <div class="dm-sub" id="dm-wf-sub">Dossiers en cours</div>
+      <div class="dm-sub">Dossiers en cours</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('rapports',document.querySelector('[data-page=rapports]'))" style="--mc:#1565C0;--mcp:#EFF6FF">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
       <div class="dm-label">Rapports & Stats</div>
-      <div class="dm-sub">Analyses et statistiques</div>
+      <div class="dm-sub">Analyses et exportations</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('nomenclature',document.querySelector('[data-page=nomenclature]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
       <div class="dm-label">Nomenclature</div>
       <div class="dm-sub">Pièces par type de dossier</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('redevances',document.querySelector('[data-page=redevances]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
       <div class="dm-label">Barème Redevances</div>
       <div class="dm-sub">Tarifs officiels</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('lotissements',document.querySelector('[data-page=lotissements]'))" style="--mc:#0891B2;--mcp:#E0F2FE">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
       <div class="dm-label">Lotissements</div>
-      <div class="dm-sub" id="dm-lot-sub">Référentiel</div>
+      <div class="dm-sub">Référentiel</div>
       <div class="dm-arrow">→</div>
     </div>
 
     <div class="dash-module" onclick="go('config',document.querySelector('[data-page=config]'))" style="--mc:#374151;--mcp:#F3F4F6">
-      <div class="dm-icon" style="background:var(--mc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      </div>
+      <div class="dm-icon" style="background:var(--mc)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
       <div class="dm-label">Configuration</div>
       <div class="dm-sub">Paramètres & utilisateurs</div>
       <div class="dm-arrow">→</div>
@@ -566,18 +600,16 @@ tbody tr:hover td{background:var(--cgp)}
 
   </div>
 
-  <!-- Activité récente compacte -->
-  <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:12px">Activité récente</div>
-  <div class="card"><div class="cb" style="padding:12px"><ul class="tl" id="tl-ul"></ul></div></div>
-
-  <!-- IDs cachés pour compatibilité -->
-  <span id="s-dt" style="display:none">0</span>
-  <span id="s-dt-enc" style="display:none">0</span>
-  <span id="s-appr" style="display:none">0</span>
-  <span id="s-retrait" style="display:none">0</span>
-  <span id="s-caisse" style="display:none">0</span>
-  <span id="dash-dt-tb" style="display:none"></span>
-  <span id="dash-acd-tb" style="display:none"></span>
+  <!-- IDs cachés pour compatibilité JS -->
+  <span id="s-dt" style="display:none"></span><span id="s-dt-enc" style="display:none"></span>
+  <span id="s-appr" style="display:none"></span><span id="s-retrait" style="display:none"></span>
+  <span id="s-caisse" style="display:none"></span><span id="dash-dt-tb" style="display:none"></span>
+  <span id="dash-acd-tb" style="display:none"></span><span id="tl-ul" style="display:none"></span>
+  <span id="dash-nb-dt" style="display:none"></span><span id="dash-nb-acd" style="display:none"></span>
+  <span id="dash-nb-caisse" style="display:none"></span><span id="dash-recettes" style="display:none"></span>
+  <span id="dm-dt-sub" style="display:none"></span><span id="dm-acd-sub" style="display:none"></span>
+  <span id="dm-caisse-sub" style="display:none"></span><span id="dm-wf-sub" style="display:none"></span>
+  <span id="dm-lot-sub" style="display:none"></span>
 </div>
 
 <!-- ========== DT LISTE ========== -->
@@ -849,14 +881,122 @@ tbody tr:hover td{background:var(--cgp)}
 
 <!-- ========== RAPPORTS ========== -->
 <div id="page-rapports" class="page">
-  <div class="two-col" style="margin-bottom:14px">
-    <div class="card"><div class="ch"><h3>ACD par statut</h3></div><div class="cb" id="rpt-st"></div></div>
-    <div class="card"><div class="ch"><h3>ACD par type</h3></div><div class="cb" id="rpt-ty"></div></div>
+
+  <!-- Filtres période globaux -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="ch">
+      <h3>Période d'analyse</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select class="fsel" id="rpt-periode" onchange="applyRptPeriode()">
+          <option value="all">Toutes les données</option>
+          <option value="today">Aujourd'hui</option>
+          <option value="week">Cette semaine</option>
+          <option value="month" selected>Ce mois-ci</option>
+          <option value="year">Cette année</option>
+          <option value="custom">Période personnalisée</option>
+        </select>
+        <div id="rpt-custom-dates" style="display:none;gap:8px;display:none;align-items:center">
+          <input type="date" id="rpt-date-from" class="fsel" onchange="applyRptPeriode()">
+          <span style="font-size:12px;color:var(--tx3)">au</span>
+          <input type="date" id="rpt-date-to" class="fsel" onchange="applyRptPeriode()">
+        </div>
+        <button class="btn btn-p" onclick="renderRapports()">🔄 Actualiser</button>
+      </div>
+    </div>
+    <!-- KPIs synthèse -->
+    <div class="cb" style="padding:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px" id="rpt-kpis">
+      </div>
+    </div>
   </div>
-  <div class="two-col">
-    <div class="card"><div class="ch"><h3>Recettes par catégorie</h3></div><div class="cb" id="rpt-caisse"></div></div>
-    <div class="card"><div class="ch"><h3>Synthèse</h3></div><div class="cb"><div class="three-col" id="rpt-syn"></div><div style="margin-top:14px" id="rpt-lot"></div></div></div>
+
+  <!-- Cartes de rapport -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+    <!-- RAPPORT CAISSE -->
+    <div class="card">
+      <div class="ch">
+        <div>
+          <h3 style="color:#B45309">💰 Rapport Caisse</h3>
+          <div class="chm">Encaissements et recettes</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-k" onclick="exportRptCSV('caisse')">⬇ CSV</button>
+          <button class="btn btn-sm" onclick="printRpt('caisse')">🖨 Imprimer</button>
+        </div>
+      </div>
+      <div class="cb">
+        <div id="rpt-caisse-kpi" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Recettes par catégorie</div>
+        <div id="rpt-caisse"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Recettes par mode de paiement</div>
+        <div id="rpt-caisse-mode"></div>
+      </div>
+    </div>
+
+    <!-- RAPPORT ACD -->
+    <div class="card">
+      <div class="ch">
+        <div>
+          <h3 style="color:var(--cg)">📋 Rapport ACD</h3>
+          <div class="chm">Attestations de concession</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-p" onclick="exportRptCSV('acd')">⬇ CSV</button>
+          <button class="btn btn-sm" onclick="printRpt('acd')">🖨 Imprimer</button>
+        </div>
+      </div>
+      <div class="cb">
+        <div id="rpt-acd-kpi" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">ACD par statut</div>
+        <div id="rpt-st"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">ACD par type de dossier</div>
+        <div id="rpt-ty"></div>
+      </div>
+    </div>
+
+    <!-- RAPPORT DOSSIERS TECHNIQUES -->
+    <div class="card">
+      <div class="ch">
+        <div>
+          <h3 style="color:#7B1FA2">📁 Rapport Dossiers Techniques</h3>
+          <div class="chm">Suivi des dossiers DT</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#7B1FA2;color:#fff;border-color:#7B1FA2" onclick="exportRptCSV('dt')">⬇ CSV</button>
+          <button class="btn btn-sm" onclick="printRpt('dt')">🖨 Imprimer</button>
+        </div>
+      </div>
+      <div class="cb">
+        <div id="rpt-dt-kpi" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">DT par statut</div>
+        <div id="rpt-dt-st"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">DT par type</div>
+        <div id="rpt-dt-ty"></div>
+      </div>
+    </div>
+
+    <!-- RAPPORT LOTISSEMENTS -->
+    <div class="card">
+      <div class="ch">
+        <div>
+          <h3 style="color:#0891B2">🏘 Rapport Lotissements</h3>
+          <div class="chm">Répartition par lotissement</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#0891B2;color:#fff;border-color:#0891B2" onclick="exportRptCSV('lots')">⬇ CSV</button>
+          <button class="btn btn-sm" onclick="printRpt('lots')">🖨 Imprimer</button>
+        </div>
+      </div>
+      <div class="cb">
+        <div id="rpt-lot"></div>
+      </div>
+    </div>
+
   </div>
+
+  <!-- RAPPORT COMPLET IMPRIMABLE (caché) -->
+  <div id="rpt-print-zone" style="display:none"></div>
 </div>
 
 <!-- ========== NOMENCLATURE ========== -->
@@ -1214,8 +1354,8 @@ tbody tr:hover td{background:var(--cgp)}
           <option value="admin">Administrateur</option>
         </select>
       </div>
-      <div class="fst">Modules autorisés</div>
-      <div id="u-modules-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <div class="fst">Modules autorisés <span style="font-size:9px;color:var(--tx3);text-transform:none;font-weight:400">(accès à ces sections)</span></div>
+      <div id="u-modules-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
         <label class="mod-toggle"><input type="checkbox" name="umod" value="dashboard" checked> Tableau de bord</label>
         <label class="mod-toggle"><input type="checkbox" name="umod" value="dt"> Dossiers Techniques</label>
         <label class="mod-toggle"><input type="checkbox" name="umod" value="acd"> Registre ACD</label>
@@ -1226,6 +1366,25 @@ tbody tr:hover td{background:var(--cgp)}
         <label class="mod-toggle"><input type="checkbox" name="umod" value="redevances"> Barème Redevances</label>
         <label class="mod-toggle"><input type="checkbox" name="umod" value="lotissements"> Lotissements</label>
         <label class="mod-toggle"><input type="checkbox" name="umod" value="config"> Configuration</label>
+      </div>
+
+      <div class="fst">Raccourcis sur le tableau de bord <span style="font-size:9px;color:var(--tx3);text-transform:none;font-weight:400">(cartes visibles)</span></div>
+      <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;padding:8px 10px;background:var(--cgp);border-radius:var(--rmd);border-left:3px solid var(--cg)">
+        Choisissez les modules qui apparaissent comme raccourcis sur le tableau de bord de cet utilisateur.
+      </div>
+      <div id="u-dash-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="dt-liste" checked> 📁 Dossiers Techniques</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="dt-new"> ➕ Nouveau DT</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="acd-liste" checked> 📋 Registre ACD</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="acd-new"> ➕ Nouvel ACD</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="caisse" checked> 💰 Caisse</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="caisse-new"> ➕ Nouvel encaissement</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="workflow"> 🔄 Suivi Workflow</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="rapports"> 📊 Rapports & Stats</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="nomenclature"> 📄 Nomenclature</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="redevances"> 🏦 Redevances</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="lotissements"> 🏘 Lotissements</label>
+        <label class="mod-toggle" style="border-color:var(--co)"><input type="checkbox" name="udash" value="config"> ⚙ Configuration</label>
       </div>
       <div class="fg" style="margin-bottom:0">
         <label>Statut du compte</label>
@@ -1260,64 +1419,242 @@ tbody tr:hover td{background:var(--cgp)}
 
 <script>
 /* ================================================================
-   SESSION — Écran de connexion intégré (sans redirection externe)
+   SESSION & AUTHENTIFICATION MULTI-UTILISATEURS
 ================================================================ */
-const SITES_KEY_APP = 'gacd_sites_list';
+const SITES_KEY_APP='gacd_sites_list';
+const ROLE_COLORS={admin:'#0A5C35',superviseur:'#6B21A8',agent:'#1D4ED8',caissier:'#B45309'};
+const ROLE_LABELS_LS={admin:'Administrateur',superviseur:'Superviseur',agent:'Agent Guichet',caissier:'Caissier'};
+const MODULE_MAP_NAV={
+  dt:['dt-liste','dt-new'],
+  acd:['acd-liste','acd-new'],
+  caisse:['caisse','caisse-new'],
+  workflow:['workflow'],
+  rapports:['rapports'],
+  nomenclature:['nomenclature'],
+  redevances:['redevances'],
+  lotissements:['lotissements'],
+  config:['config'],
+  dashboard:['dashboard']
+};
+
+let _lsSiteId=null; // site sélectionné sur l'écran login
 
 function getAppSites(){return JSON.parse(localStorage.getItem(SITES_KEY_APP)||'[]');}
+function saveAppSites(s){localStorage.setItem(SITES_KEY_APP,JSON.stringify(s));}
 function getAppSiteData(siteId,k){return JSON.parse(localStorage.getItem('gacd_'+siteId+'_'+k)||'null');}
+function setAppSiteData(siteId,k,v){localStorage.setItem('gacd_'+siteId+'_'+k,JSON.stringify(v));}
+
+/* ---- Vues de l'écran login ---- */
+function showLsView(view){
+  ['site','login','setup'].forEach(v=>{
+    const el=document.getElementById('ls-view-'+v);
+    if(el)el.style.display=v===view?'block':'none';
+  });
+  if(view==='site')renderLsSites();
+}
 
 function showLoginScreen(){
   const ls=document.getElementById('login-screen');
   if(ls)ls.classList.add('visible');
-  // Masquer l'appli
-  const sb=document.getElementById('sb');
-  const main=document.getElementById('main');
-  if(sb)sb.style.display='none';
-  if(main)main.style.display='none';
-  // Remplir la liste des sites
+  document.getElementById('sb').style.display='none';
+  document.getElementById('main').style.display='none';
   const sites=getAppSites();
-  const sel=document.getElementById('ls-site');
-  if(sel){
-    sel.innerHTML=sites.length
-      ?sites.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('')
-      :'<option value="">Aucun site configuré</option>';
-  }
+  showLsView(sites.length?'site':'setup');
 }
-
 function hideLoginScreen(){
   const ls=document.getElementById('login-screen');
   if(ls)ls.classList.remove('visible');
-  const sb=document.getElementById('sb');
-  const main=document.getElementById('main');
-  if(sb)sb.style.display='';
-  if(main)main.style.display='';
+  document.getElementById('sb').style.display='';
+  document.getElementById('main').style.display='';
 }
 
+/* ---- Rendu liste des sites ---- */
+function renderLsSites(){
+  const sites=getAppSites();
+  const el=document.getElementById('ls-sites-list');
+  if(!el)return;
+  if(!sites.length){el.innerHTML='<p style="font-size:12px;color:var(--tx3);text-align:center;padding:12px">Aucun site configuré.</p>';return;}
+  el.innerHTML=sites.map(s=>`
+    <div class="ls-site-card" onclick="selectLsSite('${s.id}')">
+      <div class="ls-site-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+      <div class="ls-site-info">
+        <div class="ls-site-name">${s.name||s.id}</div>
+        <div class="ls-site-loc">${s.org||''} ${s.loc?'· '+s.loc:''}</div>
+      </div>
+      <div class="ls-site-arrow">›</div>
+    </div>`).join('');
+}
+
+function selectLsSite(siteId){
+  _lsSiteId=siteId;
+  const sites=getAppSites();
+  const site=sites.find(s=>s.id===siteId)||{};
+  // Mettre à jour les labels de l'écran login
+  const lbl=document.getElementById('ls-site-name-lbl');
+  const org=document.getElementById('ls-site-org-lbl');
+  if(lbl)lbl.textContent=site.name||'GestionACD';
+  if(org)org.textContent=site.org||'Foncier Urbain — Côte d\'Ivoire';
+  showLsView('login');
+}
+
+/* ---- Rendu cartes utilisateurs rapides ---- */
+function togglePassVis(){
+  const inp=document.getElementById('ls-pass');
+  const ico=document.getElementById('ls-eye-icon');
+  if(!inp)return;
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  if(ico)ico.style.opacity=show?'1':'.5';
+}
+
+/* ---- Connexion ---- */
 function doInlineLogin(){
-  const user=document.getElementById('ls-user').value.trim();
+  const user=document.getElementById('ls-user').value.trim().toLowerCase();
   const pass=document.getElementById('ls-pass').value;
-  const siteId=document.getElementById('ls-site').value;
   const errEl=document.getElementById('ls-err');
-  const showErr=msg=>{errEl.textContent=msg;errEl.className='ls-err show';};
+  const showErr=msg=>{errEl.textContent=msg;errEl.className='ls-err show';
+    document.getElementById('ls-pass').value='';};
   if(!user||!pass){showErr('Identifiants requis');return;}
-  if(!siteId){showErr('Sélectionnez un site');return;}
-  const users=getAppSiteData(siteId,'users')||[];
-  const found=users.find(u=>u.username===user&&u.password===btoa(pass));
-  if(!found){showErr('Identifiant ou mot de passe incorrect');return;}
-  // Créer la session
-  const session={siteId,user:found,loginAt:new Date().toISOString()};
+  if(!_lsSiteId){showErr('Aucun site sélectionné');return;}
+  const users=getAppSiteData(_lsSiteId,'users')||[];
+  // Chercher l'utilisateur (insensible à la casse)
+  const found=users.find(u=>u.username.toLowerCase()===user);
+  if(!found){showErr('Identifiant incorrect');return;}
+  if(found.actif===false){showErr('Compte inactif — contactez l\'administrateur');return;}
+  if(found.password!==btoa(pass)){showErr('Mot de passe incorrect');return;}
+  // Session OK
+  const session={siteId:_lsSiteId,user:found,loginAt:new Date().toISOString()};
   sessionStorage.setItem('gacd_session',JSON.stringify(session));
+  // *** Mettre à jour les variables globales ***
+  SESSION=session;
+  SITE_ID=_lsSiteId;
   errEl.className='ls-err';
-  // Recharger les données du bon site et afficher l'appli
-  _reloadSiteData(siteId);
+  _reloadSiteData(_lsSiteId);
   hideLoginScreen();
-  applyConfig();updDash();updBadges();
-  toast('Bienvenue '+( found.fullname||found.username)+' ✓');
+  applyConfig();
+  applyUserAccess(found);
+  updDash();updBadges();
+  const nom=(found.fullname||found.username).split(' ')[0];
+  toast('Bienvenue '+nom+' ('+( ROLE_LABELS_LS[found.role]||found.role)+') ✓');
+}
+
+/* ---- Première installation : créer site + admin ---- */
+function doSetupSite(){
+  const name=document.getElementById('ls-s-name').value.trim();
+  const org=document.getElementById('ls-s-org').value.trim();
+  const loc=document.getElementById('ls-s-loc').value.trim();
+  const fullname=document.getElementById('ls-s-fullname').value.trim();
+  const user=document.getElementById('ls-s-user').value.trim().toLowerCase();
+  const pass=document.getElementById('ls-s-pass').value;
+  const pass2=document.getElementById('ls-s-pass2').value;
+  const errEl=document.getElementById('ls-setup-err');
+  const err=m=>{errEl.textContent=m;errEl.className='ls-err show';};
+  if(!name){err('Le nom du site est obligatoire');return;}
+  if(!user){err('L\'identifiant admin est obligatoire');return;}
+  if(!pass){err('Le mot de passe est obligatoire');return;}
+  if(pass!==pass2){err('Les mots de passe ne correspondent pas');return;}
+  if(pass.length<4){err('Mot de passe trop court (4 caractères minimum)');return;}
+  // Créer le site
+  const siteId='site_'+Math.random().toString(36).slice(2,10);
+  const sites=getAppSites();
+  sites.push({id:siteId,name,org,loc,createdAt:new Date().toISOString()});
+  saveAppSites(sites);
+  // Créer l'utilisateur admin
+  const ALL_MODS=['dashboard','dt','acd','caisse','workflow','rapports','nomenclature','redevances','lotissements','config'];
+  const adminUser={username:user,fullname,password:btoa(pass),role:'admin',actif:true,modules:ALL_MODS,createdAt:new Date().toISOString()};
+  setAppSiteData(siteId,'users',[adminUser]);
+  // CFG par défaut
+  const cfg={orgName:org||'Ministère de la Construction',orgSub:loc||'Guichet Unique du Foncier — Côte d\'Ivoire',appName:'GestionACD',username:fullname,logoData:'',pfxRec:'REC',pfxAcd:'ACD',pfxDt:'DT',year:new Date().getFullYear(),cntRec:1,cntDt:1,recuFoot1:'Document officiel',recuFoot2:'GestionACD'};
+  setAppSiteData(siteId,'cfg',cfg);
+  errEl.className='ls-err';
+  _lsSiteId=siteId;
+  toast('Site "'+name+'" créé ✓ — Connexion en cours...');
+  // Auto-login
+  setTimeout(()=>{
+    document.getElementById('ls-user').value=user;
+    document.getElementById('ls-pass').value=pass;
+    showLsView('login');
+    setTimeout(doInlineLogin,300);
+  },700);
+}
+
+/* ---- Appliquer les restrictions de module selon le rôle ---- */
+function applyUserAccess(user){
+  const modules=user.modules||[];
+  const dashModules=user.dashModules||null; // null = tout afficher (admin sans config)
+  const isAdmin=user.role==='admin';
+
+  // Sidebar : masquer les items non autorisés
+  document.querySelectorAll('.nitem[data-page]').forEach(item=>{
+    const page=item.getAttribute('data-page');
+    const modKey=Object.keys(MODULE_MAP_NAV).find(k=>MODULE_MAP_NAV[k].includes(page));
+    const allowed=isAdmin||!modKey||modules.includes(modKey)||page==='dashboard';
+    item.style.display=allowed?'':'none';
+    item.style.pointerEvents=allowed?'':'none';
+  });
+
+  // Dashboard : filtrer les cartes selon dashModules
+  renderDashModules(user);
+
+  // Badge rôle dans la sidebar
+  const roleEl=document.getElementById('sb-role-badge');
+  if(roleEl){
+    roleEl.textContent=ROLE_LABELS_LS[user.role]||user.role;
+    roleEl.style.background=ROLE_COLORS[user.role]||'#374151';
+  }
+}
+
+/* ---- Rendu dynamique des cartes du dashboard ---- */
+const DASH_CARDS_DEF=[
+  {page:'dt-liste',mc:'#7B1FA2',mcp:'#F3E8FF',icon:'<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>',label:'Dossiers Techniques',sub:'Registre DT'},
+  {page:'dt-new',mc:'#7B1FA2',mcp:'#F3E8FF',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',label:'Nouveau dossier DT',sub:'Créer un dossier technique'},
+  {page:'acd-liste',mc:'var(--cg)',mcp:'var(--cgp)',icon:'<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>',label:'Registre ACD',sub:'Toutes les attestations'},
+  {page:'acd-new',mc:'var(--cg)',mcp:'var(--cgp)',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',label:'Nouvel ACD',sub:'Créer une attestation'},
+  {page:'caisse',mc:'#B45309',mcp:'#FEF3E7',icon:'<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>',label:'Caisse',sub:'Encaissements'},
+  {page:'caisse-new',mc:'#B45309',mcp:'#FEF3E7',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',label:'Nouvel encaissement',sub:'Saisir un reçu'},
+  {page:'workflow',mc:'var(--co)',mcp:'var(--cop)',icon:'<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>',label:'Suivi Workflow',sub:'Dossiers en cours'},
+  {page:'rapports',mc:'#1565C0',mcp:'#EFF6FF',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>',label:'Rapports & Stats',sub:'Analyses et exportations'},
+  {page:'nomenclature',mc:'#0891B2',mcp:'#E0F2FE',icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>',label:'Nomenclature',sub:'Pièces par type de dossier'},
+  {page:'redevances',mc:'#0891B2',mcp:'#E0F2FE',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',label:'Barème Redevances',sub:'Tarifs officiels'},
+  {page:'lotissements',mc:'#0891B2',mcp:'#E0F2FE',icon:'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',label:'Lotissements',sub:'Référentiel'},
+  {page:'config',mc:'#374151',mcp:'#F3F4F6',icon:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>',label:'Configuration',sub:'Paramètres & utilisateurs'},
+];
+
+function renderDashModules(user){
+  const grid=document.getElementById('dash-modules-grid');
+  if(!grid)return;
+  const isAdmin=user.role==='admin';
+  const allowedMods=user.modules||[];
+  const dashMods=user.dashModules; // null ou tableau
+  // Filtrer : garder seulement les cartes autorisées ET cochées dans dashModules
+  const cards=DASH_CARDS_DEF.filter(c=>{
+    // Vérifier accès au module
+    const modKey=Object.keys(MODULE_MAP_NAV).find(k=>MODULE_MAP_NAV[k].includes(c.page));
+    const accessible=isAdmin||!modKey||allowedMods.includes(modKey);
+    if(!accessible)return false;
+    // Vérifier si la carte est dans les raccourcis dashboard
+    if(dashMods&&dashMods.length>0)return dashMods.includes(c.page);
+    return true; // pas de config = tout afficher
+  });
+  grid.innerHTML=cards.map(c=>`
+    <div class="dash-module" onclick="go('${c.page}',document.querySelector('[data-page=${c.page}]'))" style="--mc:${c.mc};--mcp:${c.mcp}">
+      <div class="dm-icon" style="background:var(--mc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">${c.icon}</svg>
+      </div>
+      <div class="dm-label">${c.label}</div>
+      <div class="dm-sub">${c.sub}</div>
+      <div class="dm-arrow">→</div>
+    </div>`).join('');
+}
+
+/* ---- Réinitialiser champs login ---- */
+function resetLsForm(){
+  const fields=['ls-user','ls-pass','ls-s-name','ls-s-org','ls-s-loc','ls-s-fullname','ls-s-user','ls-s-pass','ls-s-pass2'];
+  fields.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['ls-err','ls-setup-err'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='ls-err';});
 }
 
 function _reloadSiteData(siteId){
-  // Recharge toutes les données pour le site connecté
   const sk2=k=>'gacd_'+siteId+'_'+k;
   CFG=JSON.parse(localStorage.getItem(sk2('cfg'))||JSON.stringify(CFG));
   DT=JSON.parse(localStorage.getItem(sk2('dt'))||'[]');
@@ -1329,41 +1666,54 @@ function _reloadSiteData(siteId){
   PRESTS=JSON.parse(localStorage.getItem(sk2('prests'))||'null')||PRESTS_DEFAULT.map(p=>({...p}));
 }
 
-// Vérification session au démarrage
+/* ---- Vérification session au démarrage ---- */
 let SESSION=null;
 let SITE_ID=null;
 (function initSession(){
   const raw=sessionStorage.getItem('gacd_session');
   if(raw){
-    try{
-      SESSION=JSON.parse(raw);
-      SITE_ID=SESSION.siteId;
-    }catch(e){SESSION=null;}
+    try{SESSION=JSON.parse(raw);SITE_ID=SESSION.siteId;}
+    catch(e){SESSION=null;}
   }
   if(!SESSION||!SITE_ID){
-    // Pas de session → afficher l'écran login intégré au chargement
     document.addEventListener('DOMContentLoaded',()=>showLoginScreen());
+  } else {
+    document.addEventListener('DOMContentLoaded',()=>{
+      applyUserAccess(SESSION.user);
+    });
   }
 })();
 
 function sk(k){return 'gacd_'+(SITE_ID||'default')+'_'+k;}
 
+/* ---- Déconnexion ---- */
 function doLogout(){
   sessionStorage.removeItem('gacd_session');
-  SESSION=null;SITE_ID=null;
-  // Réinitialiser les champs login
-  const u=document.getElementById('ls-user');
-  const p=document.getElementById('ls-pass');
-  if(u)u.value='';if(p)p.value='';
-  const err=document.getElementById('ls-err');
-  if(err)err.className='ls-err';
+  SESSION=null;SITE_ID=null;_lsSiteId=null;
+  resetLsForm();
+  // Réinitialiser la sidebar (tout visible pour la prochaine connexion)
+  document.querySelectorAll('.nitem').forEach(i=>{i.style.display='';i.style.opacity='';i.style.pointerEvents='';});
   showLoginScreen();
-  toast('Déconnecté');
 }
 
-// Touche Entrée sur l'écran login intégré
+/* ---- Contrôle d'accès dans go() ---- */
+function canAccess(pageId){
+  if(!SESSION||!SESSION.user)return false;
+  const u=SESSION.user;
+  if(u.role==='admin')return true;
+  if(pageId==='dashboard')return true;
+  const modKey=Object.keys(MODULE_MAP_NAV).find(k=>MODULE_MAP_NAV[k].includes(pageId));
+  return !modKey||(u.modules||[]).includes(modKey);
+}
+
+// Entrée Entée sur le formulaire login
 document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('login-screen')?.classList.contains('visible'))doInlineLogin();
+  const ls=document.getElementById('login-screen');
+  if(e.key==='Enter'&&ls&&ls.classList.contains('visible')){
+    const view=['ls-view-login','ls-view-setup'].find(v=>{const el=document.getElementById(v);return el&&el.style.display!=='none';});
+    if(view==='ls-view-login')doInlineLogin();
+    else if(view==='ls-view-setup')doSetupSite();
+  }
 });/* ================================================================
    CONFIG
 ================================================================ */
@@ -1616,12 +1966,19 @@ function b64File(file,cb){const r=new FileReader();r.onload=e=>cb(e.target.resul
 const PT={dashboard:'Tableau de bord','dt-liste':'Dossiers Techniques','dt-new':'Nouveau Dossier','acd-liste':'Registre ACD','acd-new':'Nouvel ACD',caisse:'Caisse — Encaissements','caisse-new':'Nouvel Encaissement',workflow:'Suivi Workflow',rapports:'Rapports & Stats',nomenclature:'Nomenclature des pièces',redevances:'Barème Redevances',lotissements:'Lotissements',config:'Configuration'};
 
 function go(id,el){
+  // Contrôle d'accès
+  if(!canAccess(id)){
+    toast('Accès non autorisé pour votre rôle','err');return;
+  }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('active'));
   const pg=g('page-'+id);if(pg)pg.classList.add('active');
   if(el)el.classList.add('active');
   g('tb-ti').textContent=PT[id]||id;
   g('tb-bc').textContent=CFG.appName+' / '+(PT[id]||id);
+  // Bouton retour : masqué sur le dashboard, visible partout ailleurs
+  const btnR=g('btn-retour');
+  if(btnR)btnR.style.display=id==='dashboard'?'none':'inline-flex';
   if(id==='dashboard')updDash();
   if(id==='dt-liste')renderDT();
   if(id==='dt-new'){if(_eDT===-1){resetDTForm();sv('dt-ref',autoRef('dt'));}fillLS('dt-lot');buildPieces();updFrais();}
@@ -2328,27 +2685,220 @@ function renderTL(){
 /* ================================================================
    RAPPORTS
 ================================================================ */
+/* ================================================================
+   RAPPORTS — Filtrage période + KPIs + Export
+================================================================ */
+function getRptPeriode(){
+  const p=gv('rpt-periode')||'all';
+  const now=new Date();
+  let from=null,to=null;
+  if(p==='today'){from=to=now.toISOString().split('T')[0];}
+  else if(p==='week'){
+    const d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);
+    from=d.toISOString().split('T')[0];to=now.toISOString().split('T')[0];
+  }
+  else if(p==='month'){from=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01';to=now.toISOString().split('T')[0];}
+  else if(p==='year'){from=now.getFullYear()+'-01-01';to=now.toISOString().split('T')[0];}
+  else if(p==='custom'){from=gv('rpt-date-from');to=gv('rpt-date-to');}
+  return {p,from,to};
+}
+function filterByDate(arr,dateKey,from,to){
+  if(!from&&!to)return arr;
+  return arr.filter(item=>{
+    const d=(item[dateKey]||'').slice(0,10);
+    if(from&&d<from)return false;
+    if(to&&d>to)return false;
+    return true;
+  });
+}
+function applyRptPeriode(){
+  const p=gv('rpt-periode');
+  const cd=g('rpt-custom-dates');
+  if(cd)cd.style.display=p==='custom'?'flex':'none';
+  renderRapports();
+}
+
+function rptBar(label,val,total,color){
+  const pct=total?Math.round(val/total*100):0;
+  return `<div class="rbi">
+    <div class="rbh"><span>${label}</span><span style="font-weight:700;color:var(--tx)">${val} <span style="color:var(--tx3);font-weight:400">(${pct}%)</span></span></div>
+    <div class="rbt"><div class="rbf" style="width:${pct}%;background:${color}"></div></div>
+  </div>`;
+}
+function rptKpi(label,val,color,sub=''){
+  return `<div style="background:var(--sur2);border-radius:var(--rmd);padding:10px 12px;border-left:3px solid ${color}">
+    <div style="font-size:10px;color:var(--tx3);font-weight:600;margin-bottom:3px">${label}</div>
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:${color}">${val}</div>
+    ${sub?`<div style="font-size:10px;color:var(--tx3);margin-top:1px">${sub}</div>`:''}
+  </div>`;
+}
+
 function renderRapports(){
-  const tot=ACD.length||1;
+  const {from,to}=getRptPeriode();
+
+  // ---- Données filtrées ----
+  const aCaisse=filterByDate(CAISSE,'date',from,to);
+  const aACD=filterByDate(ACD,'date',from,to);
+  const aDT=filterByDate(DT,'date',from,to);
+
+  // ---- KPIs globaux ----
+  const totRec=aCaisse.reduce((s,c)=>s+(c.paye||0),0);
+  const kpis=g('rpt-kpis');
+  if(kpis)kpis.innerHTML=[
+    rptKpi('Dossiers DT',aDT.length,'#7B1FA2'),
+    rptKpi('ACD enregistrés',aACD.length,'var(--cg)',aACD.filter(a=>a.statut==='approuve').length+' approuvé(s)'),
+    rptKpi('Recettes totales',fmt(totRec)+' F','#B45309',aCaisse.length+' reçu(s)'),
+    rptKpi('ACD approuvés',aACD.filter(a=>a.statut==='approuve').length,'var(--cg)'),
+    rptKpi('DT validés',aDT.filter(d=>d.statut==='valide').length,'#7B1FA2'),
+    rptKpi('Superficie totale',fmt(aACD.reduce((s,a)=>s+(parseFloat(a.sup)||0),0))+' m²','#0891B2'),
+  ].join('');
+
+  // ---- CAISSE ----
+  const ckpi=g('rpt-caisse-kpi');
+  if(ckpi)ckpi.innerHTML=[
+    rptKpi('Total encaissé',fmt(totRec)+' F','#B45309'),
+    rptKpi('Payés intégralement',aCaisse.filter(c=>c.statut==='paye').length,'#16A34A'),
+    rptKpi('Partiels / impayés',aCaisse.filter(c=>c.statut!=='paye').length,'#991B1B'),
+  ].join('');
+  const cm={};aCaisse.forEach(c=>{cm[c.cat||'Divers']=(cm[c.cat||'Divers']||0)+(c.paye||0);});
+  const ce=Object.entries(cm).sort((a,b)=>b[1]-a[1]);
+  const tCat=ce.reduce((s,[,v])=>s+v,0)||1;
+  g('rpt-caisse').innerHTML=ce.length?ce.map(([k,v])=>rptBar(k,v,tCat,'#B45309')).join(''):'<div class="empty"><p>Aucune recette sur la période</p></div>';
+  const mm={};aCaisse.forEach(c=>{const ml={especes:'Espèces',cheque:'Chèque',virement:'Virement',mobile:'Mobile Money'};mm[ml[c.mode]||c.mode||'Espèces']=(mm[ml[c.mode]||c.mode||'Espèces']||0)+(c.paye||0);});
+  const me=Object.entries(mm).sort((a,b)=>b[1]-a[1]);const mColors=['#B45309','#0891B2','#1565C0','#16A34A'];
+  g('rpt-caisse-mode').innerHTML=me.length?me.map(([k,v],i)=>rptBar(k,v,tCat,mColors[i%mColors.length])).join(''):'<div class="empty"><p>—</p></div>';
+
+  // ---- ACD ----
+  const akpi=g('rpt-acd-kpi');
+  if(akpi)akpi.innerHTML=[
+    rptKpi('Total ACD',aACD.length,'var(--cg)'),
+    rptKpi('Approuvés',aACD.filter(a=>a.statut==='approuve').length,'#16A34A'),
+    rptKpi('En cours',aACD.filter(a=>a.statut==='encours').length,'#1565C0'),
+    rptKpi('Retirés',aACD.filter(a=>a.statut==='retrait').length,'#0891B2'),
+  ].join('');
   const SS=[{k:'approuve',l:'Approuvé',c:'#0A5C35'},{k:'encours',l:'En cours',c:'#1565C0'},{k:'attente',l:'En attente',c:'#E8820C'},{k:'non-approuve',l:'Non approuvé',c:'#991B1B'},{k:'retrait',l:'Retiré',c:'#0891B2'}];
-  g('rpt-st').innerHTML=SS.map(s=>{const v=ACD.filter(a=>a.statut===s.k).length;const p=Math.round(v/tot*100);return `<div class="rbi"><div class="rbh"><span>${s.l}</span><span>${v} (${p}%)</span></div><div class="rbt"><div class="rbf" style="width:${p}%;background:${s.c}"></div></div></div>`;}).join('');
-  const tm={};ACD.forEach(a=>{tm[a.type||'Non défini']=(tm[a.type||'Non défini']||0)+1;});
+  g('rpt-st').innerHTML=SS.map(s=>rptBar(s.l,aACD.filter(a=>a.statut===s.k).length,aACD.length||1,s.c)).join('');
+  const tm={};aACD.forEach(a=>{tm[a.type||'Non défini']=(tm[a.type||'Non défini']||0)+1;});
   const tc=['#0A5C35','#E8820C','#1565C0','#7B1FA2'];
   const te=Object.entries(tm);
-  g('rpt-ty').innerHTML=te.length?te.map(([k,v],i)=>{const p=Math.round(v/tot*100);return `<div class="rbi"><div class="rbh"><span>${k}</span><span>${v} (${p}%)</span></div><div class="rbt"><div class="rbf" style="width:${p}%;background:${tc[i%tc.length]}"></div></div></div>`;}).join(''):'<p style="font-size:12px;color:var(--tx3)">Aucune donnée</p>';
-  const cm={};CAISSE.forEach(c=>{cm[c.cat||'Divers']=(cm[c.cat||'Divers']||0)+(c.paye||0);});
-  const ce=Object.entries(cm).sort((a,b)=>b[1]-a[1]);
-  const totCK=ce.reduce((s,[,v])=>s+v,0)||1;
-  g('rpt-caisse').innerHTML=ce.length?ce.map(([k,v])=>{const p=Math.round(v/totCK*100);return `<div class="rbi"><div class="rbh"><span>${k}</span><span>${fmt(v)} F (${p}%)</span></div><div class="rbt"><div class="rbf" style="width:${p}%;background:#B45309"></div></div></div>`;}).join(''):'<p style="font-size:12px;color:var(--tx3)">Aucune recette</p>';
-  const sup=ACD.reduce((a,x)=>a+(parseFloat(x.sup)||0),0);
-  const totCKAll=CAISSE.reduce((s,c)=>s+(c.paye||0),0);
-  g('rpt-syn').innerHTML=`
-    <div class="sc g" style="margin:0"><div class="slbl">DT + ACD</div><div class="sval" style="color:var(--cg);font-size:20px">${DT.length}+${ACD.length}</div></div>
-    <div class="sc k" style="margin:0"><div class="slbl">Recettes totales</div><div class="sval" style="color:#B45309;font-size:18px">${fmt(totCKAll)}</div><div class="ssub">F CFA</div></div>
-    <div class="sc gr" style="margin:0"><div class="slbl">Superficie totale</div><div class="sval" style="color:var(--tx2);font-size:18px">${fmt(sup)}</div><div class="ssub">m²</div></div>`;
+  g('rpt-ty').innerHTML=te.length?te.map(([k,v],i)=>rptBar(k,v,aACD.length||1,tc[i%tc.length])).join(''):'<div class="empty"><p>Aucun ACD sur la période</p></div>';
+
+  // ---- DT ----
+  const dkpi=g('rpt-dt-kpi');
+  if(dkpi)dkpi.innerHTML=[
+    rptKpi('Total DT',aDT.length,'#7B1FA2'),
+    rptKpi('En cours',aDT.filter(d=>d.statut==='en_cours').length,'#7B1FA2'),
+    rptKpi('Complets',aDT.filter(d=>d.statut==='complet').length,'#0891B2'),
+    rptKpi('Validés',aDT.filter(d=>d.statut==='valide').length,'#16A34A'),
+  ].join('');
+  const DS=[{k:'en_cours',l:'En cours',c:'#7B1FA2'},{k:'complet',l:'Complet',c:'#0891B2'},{k:'depose',l:'Déposé',c:'#1565C0'},{k:'valide',l:'Validé',c:'#16A34A'}];
+  g('rpt-dt-st').innerHTML=DS.map(s=>rptBar(s.l,aDT.filter(d=>d.statut===s.k).length,aDT.length||1,s.c)).join('');
+  const dtm={};aDT.forEach(d=>{const tl={LA:"Lettre d'Attribution",AV:'Attest. Villageoise',TF:'Titre Foncier',GS:'Grande Superficie'};dtm[tl[d.type]||d.type||'Autre']=(dtm[tl[d.type]||d.type||'Autre']||0)+1;});
+  const dte=Object.entries(dtm);
+  g('rpt-dt-ty').innerHTML=dte.length?dte.map(([k,v],i)=>rptBar(k,v,aDT.length||1,tc[i%tc.length])).join(''):'<div class="empty"><p>Aucun DT sur la période</p></div>';
+
+  // ---- LOTISSEMENTS ----
   const lm={};ACD.forEach(a=>{if(a.lotissement)lm[a.lotissement]=(lm[a.lotissement]||0)+1;});
-  const le=Object.entries(lm).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  g('rpt-lot').innerHTML=le.length?`<div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:9px;text-transform:uppercase">Top lotissements</div>`+le.map(([k,v])=>{const p=Math.round(v/ACD.length*100);return `<div class="rbi"><div class="rbh"><span>${k}</span><span>${v} ACD (${p}%)</span></div><div class="rbt"><div class="rbf" style="width:${p}%;background:var(--cg)"></div></div></div>`;}).join(''):'';
+  const le=Object.entries(lm).sort((a,b)=>b[1]-a[1]);
+  g('rpt-lot').innerHTML=le.length?le.map(([k,v])=>rptBar(k,v,ACD.length||1,'var(--cg)')).join(''):'<div class="empty"><p>Aucune donnée de lotissement</p></div>';
+}
+
+/* ---- Exports CSV par type ---- */
+function exportRptCSV(type){
+  const {from,to}=getRptPeriode();
+  let headers=[],rows=[],fname='';
+  if(type==='caisse'){
+    const data=filterByDate(CAISSE,'date',from,to);
+    headers=['N° Reçu','Date','Heure','Client','Prestation','Catégorie','Dossier','Mode','Montant dû','Montant payé','Reste','Statut'];
+    rows=data.map(c=>[c.ref,c.date||'',c.heure||'',c.client,c.prestation||'',c.cat||'',c.dossier||'',c.mode||'',c.du,c.paye,c.reste,c.statut]);
+    fname='Rapport_Caisse';
+  } else if(type==='acd'){
+    const data=filterByDate(ACD,'date',from,to);
+    headers=['Date','N° ATV','N° ACD','Nom et Prénoms','Ilôt','Lot','Lotissement','Commune','Superficie m²','Type','Statut','DT lié'];
+    rows=data.map(a=>[a.date||'',a.atv||'',a.acd||'',a.nom,a.ilot||'',a.lot||'',a.lotissement||'',a.commune||'',a.sup||'',a.type||'',a.statut,a.dt_ref||'']);
+    fname='Rapport_ACD';
+  } else if(type==='dt'){
+    const data=filterByDate(DT,'date',from,to);
+    headers=['Réf. DT','Date','Nom','Type','Lotissement','Commune','Ilôt','Lot','Superficie m²','Statut'];
+    rows=data.map(d=>[d.ref,d.date||'',d.nom,d.type,d.lotissement||'',d.commune||'',d.ilot||'',d.lot_n||'',d.sup||'',d.statut]);
+    fname='Rapport_DT';
+  } else if(type==='lots'){
+    const lm={};ACD.forEach(a=>{if(a.lotissement){if(!lm[a.lotissement])lm[a.lotissement]={dt:0,acd:0};lm[a.lotissement].acd++;}});
+    DT.forEach(d=>{if(d.lotissement){if(!lm[d.lotissement])lm[d.lotissement]={dt:0,acd:0};lm[d.lotissement].dt++;}});
+    headers=['Lotissement','Nb DT','Nb ACD','Total dossiers'];
+    rows=Object.entries(lm).sort((a,b)=>b[1].acd-a[1].acd).map(([k,v])=>[k,v.dt,v.acd,v.dt+v.acd]);
+    fname='Rapport_Lotissements';
+  }
+  const suffix=from?`_${from}_${to||''}`: '_complet';
+  const csv='\uFEFF'+[headers,...rows].map(r=>r.map(v=>`"${v}"`).join(';')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fname+suffix+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Export '+fname+' téléchargé ✓');
+}
+
+/* ---- Impression par type ---- */
+function printRpt(type){
+  const {from,to,p}=getRptPeriode();
+  const periodeLabel=p==='all'?'Toutes les données':p==='today'?'Aujourd\'hui':p==='week'?'Cette semaine':p==='month'?'Ce mois-ci':p==='year'?'Cette année':(from+' au '+to);
+  const logoHtml=CFG.logoData?`<img src="${CFG.logoData}" style="width:40px;height:40px;object-fit:cover;border-radius:6px">`
+    :`<div style="width:40px;height:40px;background:#E8820C;border-radius:6px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="20" fill="white"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></div>`;
+
+  let title='',tableHtml='';
+  if(type==='caisse'){
+    const data=filterByDate(CAISSE,'date',from,to);
+    const tot=data.reduce((s,c)=>s+(c.paye||0),0);
+    title='Rapport Caisse';
+    tableHtml=`<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px">
+      <thead><tr style="background:#B45309;color:#fff">${['N° Reçu','Date','Client','Prestation','Mode','Montant payé','Statut'].map(h=>`<th style="padding:7px 10px;text-align:left">${h}</th>`).join('')}</tr></thead>
+      <tbody>${data.map((c,i)=>`<tr style="background:${i%2?'#fafaf8':'#fff'}"><td style="padding:6px 10px">${c.ref}</td><td>${c.date||''}</td><td>${c.client}</td><td style="font-size:10px">${c.prestation||''}</td><td>${c.mode||''}</td><td style="font-weight:700;color:#B45309">${fmt(c.paye)} F</td><td>${c.statut}</td></tr>`).join('')}</tbody>
+      <tfoot><tr style="background:#FEF3E7"><td colspan="5" style="padding:8px 10px;font-weight:700">TOTAL ENCAISSÉ</td><td style="padding:8px 10px;font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#B45309" colspan="2">${fmt(tot)} F CFA</td></tr></tfoot>
+    </table>`;
+  } else if(type==='acd'){
+    const data=filterByDate(ACD,'date',from,to);
+    title='Rapport ACD';
+    tableHtml=`<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px">
+      <thead><tr style="background:#0A5C35;color:#fff">${['Date','N° ATV','N° ACD','Nom et Prénoms','Ilôt / Lot','Lotissement','Type','Statut'].map(h=>`<th style="padding:7px 10px;text-align:left">${h}</th>`).join('')}</tr></thead>
+      <tbody>${data.map((a,i)=>`<tr style="background:${i%2?'#f9fdf9':'#fff'}"><td style="padding:6px 10px">${a.date||'—'}</td><td style="font-weight:700;color:#0A5C35">${a.atv||'—'}</td><td>${a.acd||'—'}</td><td>${a.nom}</td><td>${a.ilot||'—'} / ${a.lot||'—'}</td><td>${a.lotissement||'—'}</td><td>${a.type||'—'}</td><td>${a.statut}</td></tr>`).join('')}</tbody>
+    </table>`;
+  } else if(type==='dt'){
+    const data=filterByDate(DT,'date',from,to);
+    title='Rapport Dossiers Techniques';
+    tableHtml=`<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px">
+      <thead><tr style="background:#7B1FA2;color:#fff">${['Réf. DT','Date','Nom','Type','Lotissement','Ilôt / Lot','Statut'].map(h=>`<th style="padding:7px 10px;text-align:left">${h}</th>`).join('')}</tr></thead>
+      <tbody>${data.map((d,i)=>`<tr style="background:${i%2?'#fdf9ff':'#fff'}"><td style="padding:6px 10px;font-weight:700;color:#7B1FA2">${d.ref}</td><td>${d.date||'—'}</td><td>${d.nom}</td><td>${d.type}</td><td>${d.lotissement||'—'}</td><td>${d.ilot||'—'} / ${d.lot_n||'—'}</td><td>${d.statut}</td></tr>`).join('')}</tbody>
+    </table>`;
+  } else if(type==='lots'){
+    const lm={};ACD.forEach(a=>{if(a.lotissement){if(!lm[a.lotissement])lm[a.lotissement]={dt:0,acd:0};lm[a.lotissement].acd++;}});
+    DT.forEach(d=>{if(d.lotissement){if(!lm[d.lotissement])lm[d.lotissement]={dt:0,acd:0};lm[d.lotissement].dt++;}});
+    title='Rapport Lotissements';
+    const rows=Object.entries(lm).sort((a,b)=>(b[1].acd+b[1].dt)-(a[1].acd+a[1].dt));
+    tableHtml=`<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px">
+      <thead><tr style="background:#0891B2;color:#fff">${['Lotissement','Nb DT','Nb ACD','Total'].map(h=>`<th style="padding:7px 10px;text-align:left">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map(([k,v],i)=>`<tr style="background:${i%2?'#f0fafc':'#fff'}"><td style="padding:6px 10px;font-weight:700">${k}</td><td>${v.dt}</td><td style="color:#0A5C35;font-weight:700">${v.acd}</td><td style="font-weight:700">${v.dt+v.acd}</td></tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  const win=window.open('','_blank','width=900,height=700');
+  win.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+    <title>${title} — ${CFG.appName}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;font-size:12px;color:#1A1A18;padding:24px}
+    .rpt-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0A5C35;padding-bottom:14px;margin-bottom:18px}
+    .rpt-org{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#0A5C35}
+    .rpt-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;text-align:right}
+    .rpt-periode{font-size:11px;color:#666;text-align:right;margin-top:4px}
+    @media print{body{padding:10mm}button{display:none}}</style>
+  </head><body>
+    <div class="rpt-head">
+      <div style="display:flex;align-items:center;gap:12px">${logoHtml}<div><div class="rpt-org">${CFG.orgName}</div><div style="font-size:11px;color:#666">${CFG.orgSub}</div></div></div>
+      <div><div class="rpt-title">${title}</div><div class="rpt-periode">Période : ${periodeLabel}</div><div style="font-size:10px;color:#999;margin-top:3px">Édité le ${new Date().toLocaleString('fr-FR')}</div></div>
+    </div>
+    ${tableHtml}
+    <div style="margin-top:20px;text-align:center"><button onclick="window.print()" style="background:#0A5C35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🖨 Imprimer / Enregistrer en PDF</button></div>
+  </body></html>`);
+  win.document.close();
 }
 
 /* ================================================================
@@ -2667,9 +3217,14 @@ function editUserModal(i){
   g('u-role').value=u.role||'agent';
   g('u-actif').value=u.actif===false?'0':'1';
   g('u-alert').className='alert alert-err';
-  // Cocher les modules
+  // Cocher les modules d'accès
   document.querySelectorAll('[name=umod]').forEach(cb=>{
     cb.checked=(u.modules||[]).includes(cb.value);
+  });
+  // Cocher les raccourcis tableau de bord
+  const dm=u.dashModules||[];
+  document.querySelectorAll('[name=udash]').forEach(cb=>{
+    cb.checked=dm.length?dm.includes(cb.value):true;
   });
   openM('m-user');
 }
@@ -2679,6 +3234,17 @@ function updUserRoleModules(){
   const defaults=ROLE_DEFAULT_MODULES[role]||[];
   document.querySelectorAll('[name=umod]').forEach(cb=>{
     cb.checked=defaults.includes(cb.value);
+  });
+  // Raccourcis dashboard par défaut selon le rôle
+  const dashDefaults={
+    admin:['dt-liste','dt-new','acd-liste','acd-new','caisse','caisse-new','workflow','rapports','nomenclature','redevances','lotissements','config'],
+    superviseur:['dt-liste','acd-liste','caisse','workflow','rapports','lotissements'],
+    agent:['dt-liste','dt-new','acd-liste','acd-new','nomenclature','redevances'],
+    caissier:['caisse','caisse-new','redevances']
+  };
+  const dd=dashDefaults[role]||dashDefaults.agent;
+  document.querySelectorAll('[name=udash]').forEach(cb=>{
+    cb.checked=dd.includes(cb.value);
   });
 }
 
@@ -2690,6 +3256,7 @@ function saveUser(){
   const role=g('u-role').value;
   const actif=g('u-actif').value==='1';
   const mods=[...document.querySelectorAll('[name=umod]:checked')].map(c=>c.value);
+  const dashMods=[...document.querySelectorAll('[name=udash]:checked')].map(c=>c.value);
   const alertEl=g('u-alert');
 
   if(!username){alertEl.textContent='Identifiant obligatoire';alertEl.className='alert alert-err show';return;}
@@ -2701,7 +3268,7 @@ function saveUser(){
   if(dup){alertEl.textContent='Identifiant déjà utilisé';alertEl.className='alert alert-err show';return;}
 
   const entry={
-    fullname,username,role,actif,modules:mods,
+    fullname,username,role,actif,modules:mods,dashModules:dashMods,
     password:pass?btoa(pass):(_eUser>=0?USERS[_eUser].password:''),
     createdAt:_eUser>=0?USERS[_eUser].createdAt:new Date().toISOString()
   };
